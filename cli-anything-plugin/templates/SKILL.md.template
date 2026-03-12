@@ -1,6 +1,8 @@
 ---
-name: "{{ skill_name }}"
-description: "{{ skill_description }}"
+name: >-
+  {{ skill_name }}
+description: >-
+  {{ skill_description }}
 ---
 
 # {{ skill_name }}
@@ -49,6 +51,7 @@ cli-anything-{{ software_name }}
 # Enter commands interactively with tab-completion and history
 ```
 
+{% if command_groups %}
 ## Command Groups
 
 {% for group in command_groups %}
@@ -63,6 +66,7 @@ cli-anything-{{ software_name }}
 {% endfor %}
 
 {% endfor %}
+{% endif %}
 ## Examples
 
 {% for example in examples %}

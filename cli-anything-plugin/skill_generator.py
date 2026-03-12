@@ -11,12 +11,15 @@ The generated SKILL.md files contain:
 - Examples for AI agents
 """
 
-import os
-import json
 import re
 from pathlib import Path
 from typing import Optional
 from dataclasses import dataclass, field
+
+
+def _format_display_name(name: str) -> str:
+    """Format software name for display (replace underscores/hyphens with spaces, then title)."""
+    return name.replace("_", " ").replace("-", " ").title()
 
 
 @dataclass
@@ -69,7 +72,12 @@ def extract_cli_metadata(harness_path: str) -> SkillMetadata:
 
     # Find the cli_anything/<software> directory
     cli_anything_dir = harness_path / "cli_anything"
-    software_dirs = [d for d in cli_anything_dir.iterdir()
+    if not cli_anything_dir.exists():
+        raise ValueError(
+            f"cli_anything directory not found in {harness_path}. "
+            "Ensure the harness structure includes cli_anything/<software>/"
+        )
+    software_dirs = [d for d in cli_anything_dir.iterdir()]
                      if d.is_dir() and (d / "__init__.py").exists()]
 
     if not software_dirs:
@@ -107,7 +115,7 @@ def extract_cli_metadata(harness_path: str) -> SkillMetadata:
 
     # Build skill name and description
     skill_name = f"cli-anything-{software_name}"
-    skill_description = f"Command-line interface for {software_name.title()} - {skill_intro[:100]}..."
+    skill_description = f"Command-line interface for {_format_display_name(software_name)} - {skill_intro[:100]}..."
 
     return SkillMetadata(
         skill_name=skill_name,
@@ -181,13 +189,23 @@ def extract_commands_from_cli(cli_path: Path) -> list[CommandGroup]:
     groups = []
 
     # Find Click group decorators
-    # Pattern: @click.group() or @<group_name>.group()
-    group_pattern = r'@(\w+)\.group\([^)]*\)(?:\s*@click\.[^\n]+)*\s*def\s+(\w+)\([^)]*\):\s*"""([^"]*)"""'
+    # Pattern handles:
+    # - Multi-line decorators (decorators on separate lines)
+    # - Docstrings on the same line or following line after function definition
+    # - Various Click decorator patterns like @click.option(), @click.argument()
+    # Uses re.DOTALL to match across newlines between decorator and def
+    group_pattern = (
+        r'@(\w+)\.group\([^)]*\)'                          # @xxx.group(...)
+        r'(?:\s*@[\w.]+\([^)]*\))*'                         # optional additional decorators
+        r'\s*def\s+(\w+)\([^)]*\)'                          # def xxx(...):
+        r':\s*'                                             # colon with optional whitespace
+        r'(?:"""([\s\S]*?)"""|\'\'\'([\s\S]*?)\'\'\')?'      # optional docstring (""" or ''')
+    )
 
-    for match in re.finditer(group_pattern, content, re.MULTILINE):
-        decorator_name = match.group(1)
+    for match in re.finditer(group_pattern, content):
         group_func = match.group(2)
-        group_doc = match.group(3).strip()
+        # Docstring can be in group 3 (triple-double) or group 4 (triple-single)
+        group_doc = (match.group(3) or match.group(4) or "").strip()
 
         group_name = group_func.replace("_", " ").title()
         if not group_name:
@@ -200,13 +218,23 @@ def extract_commands_from_cli(cli_path: Path) -> list[CommandGroup]:
         ))
 
     # Find Click command decorators
-    # Pattern: @<group>.command() followed by def <name>(): """doc"""
-    command_pattern = r'@(\w+)\.command\([^)]*\)(?:\s*@click\.[^\n]+)*\s*def\s+(\w+)\([^)]*\):\s*"""([^"]*)"""'
+    # Pattern handles:
+    # - Multi-line decorators (decorators on separate lines)
+    # - Docstrings on the same line or following line after function definition
+    # - Various Click decorator patterns like @click.option(), @click.argument()
+    command_pattern = (
+        r'@(\w+)\.command\([^)]*\)'                         # @xxx.command(...)
+        r'(?:\s*@[\w.]+\([^)]*\))*'                          # optional additional decorators
+        r'\s*def\s+(\w+)\([^)]*\)'                           # def xxx(...):
+        r':\s*'                                              # colon with optional whitespace
+        r'(?:"""([\s\S]*?)"""|\'\'\'([\s\S]*?)\'\'\')?'       # optional docstring (""" or ''')
+    )
 
-    for match in re.finditer(command_pattern, content, re.MULTILINE):
+    for match in re.finditer(command_pattern, content):
         group_name = match.group(1)
         cmd_name = match.group(2)
-        cmd_doc = match.group(3).strip()
+        # Docstring can be in group 3 (triple-double) or group 4 (triple-single)
+        cmd_doc = (match.group(3) or match.group(4) or "").strip()
 
         # Find the matching group
         for group in groups:
@@ -224,9 +252,10 @@ def extract_commands_from_cli(cli_path: Path) -> list[CommandGroup]:
             commands=[]
         )
 
-        for match in re.finditer(command_pattern, content, re.MULTILINE):
+        for match in re.finditer(command_pattern, content):
             cmd_name = match.group(2)
-            cmd_doc = match.group(3).strip()
+            # Docstring can be in group 3 (triple-double) or group 4 (triple-single)
+            cmd_doc = (match.group(3) or match.group(4) or "").strip()
             default_group.commands.append(CommandInfo(
                 name=cmd_name.replace("_", "-"),
                 description=cmd_doc or f"Execute {cmd_name} operation."
@@ -346,7 +375,7 @@ def generate_skill_md_simple(metadata: SkillMetadata) -> str:
         "",
         "**Prerequisites:**",
         "- Python 3.10+",
-        f"- {metadata.software_name.title()} must be installed on your system",
+        f"- {_format_display_name(metadata.software_name)} must be installed on your system",
     ]
 
     if metadata.system_package:
@@ -450,8 +479,9 @@ def generate_skill_file(harness_path: str, output_path: Optional[str] = None,
 
     # Determine output path
     if output_path is None:
-        # Default to skills/ directory
-        output_path = Path("skills") / f"{metadata.software_name}_SKILL.md"
+        # Default to skills/ directory under harness_path
+        harness_path_obj = Path(harness_path)
+        output_path = harness_path_obj / "skills" / f"{metadata.software_name}_SKILL.md"
     else:
         output_path = Path(output_path)
 
