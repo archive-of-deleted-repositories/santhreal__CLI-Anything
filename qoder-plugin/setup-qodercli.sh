@@ -26,7 +26,15 @@ fi
 
 # Qodercli config file
 QODER_CONFIG="${QODER_HOME:-$HOME}/.qoder.json"
+CONFIG_DIR="$(dirname "${QODER_CONFIG}")"
 
+# Ensure config directory exists
+if [ ! -d "${CONFIG_DIR}" ]; then
+    if ! mkdir -p "${CONFIG_DIR}"; then
+        echo -e "${YELLOW}Error: Failed to create config directory ${CONFIG_DIR}${NC}" >&2
+        exit 1
+    fi
+fi
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo -e "${BLUE}  cli-anything Plugin for Qodercli${NC}"
 echo -e "${BLUE}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
