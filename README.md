@@ -245,6 +245,8 @@ cli-anything-gimp --json layer add -n "Background" --type solid --color "#1a1a2e
 cli-anything-gimp
 ```
 
+Each installed CLI ships with a [`SKILL.md`](#-skillmd-generation) inside the Python package (`cli_anything/<software>/skills/SKILL.md`). The REPL banner automatically displays the absolute path to this file so AI agents know exactly where to read the skill definition. No extra configuration needed — `pip install` makes the skill discoverable.
+
 ---
 
 ## 💡 CLI-Anything's Vision: Building Agent-Native Software
