@@ -102,3 +102,9 @@ assets/gen_typing_gif.py
 !opencode-commands/
 !/qoder-plugin/
 
+# Step 10: Allow CLI Hub registry and frontend
+!/registry.json
+!/docs/
+/docs/*
+!/docs/hub/
+
