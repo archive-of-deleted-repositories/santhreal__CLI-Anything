@@ -2,7 +2,7 @@
   "meta": {
     "repo": "https://github.com/HKUDS/CLI-Anything",
     "description": "CLI-Hub — Agent-native stateful CLI interfaces for softwares, codebases, and Web Services",
-    "updated": "2026-03-17"
+    "updated": "2026-03-18"
   },
   "clis": [
     {
@@ -111,6 +111,18 @@
       "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=libreoffice/agent-harness",
       "entry_point": "cli-anything-libreoffice",
       "skill_md": "libreoffice/agent-harness/cli_anything/libreoffice/skills/SKILL.md",
+      "category": "office"
+    },
+    {
+      "name": "mubu",
+      "display_name": "Mubu",
+      "version": "0.1.0",
+      "description": "Knowledge management and outlining via local Mubu desktop data",
+      "requires": "Mubu desktop app",
+      "homepage": "https://mubu.com",
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=mubu/agent-harness",
+      "entry_point": "cli-anything-mubu",
+      "skill_md": "mubu/agent-harness/cli_anything/mubu/skills/SKILL.md",
       "category": "office"
     },
     {
