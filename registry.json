@@ -20,6 +20,20 @@
       "contributor_url": "https://github.com/koltyu-anygen"
     },
     {
+      "name": "adguardhome",
+      "display_name": "AdGuardHome",
+      "version": "1.0.0",
+      "description": "DNS ad-blocking and network infrastructure management via AdGuardHome REST API",
+      "requires": "AdGuardHome instance running",
+      "homepage": "https://adguard.com/adguard-home/overview.html",
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=adguardhome/agent-harness",
+      "entry_point": "cli-anything-adguardhome",
+      "skill_md": null,
+      "category": "network",
+      "contributor": "pyxl-dev",
+      "contributor_url": "https://github.com/pyxl-dev"
+    },
+    {
       "name": "audacity",
       "display_name": "Audacity",
       "version": "1.0.0",

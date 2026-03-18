@@ -8,8 +8,8 @@ CLI-Anything: Bridging the Gap Between AI Agents and the World's Software</stron
 <p align="center">
   <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-5_min-blue?style=for-the-badge" alt="Quick Start"></a>
   <a href="https://hkuds.github.io/CLI-Anything/hub/"><img src="https://img.shields.io/badge/CLI_Hub-Browse_%26_Install-ff69b4?style=for-the-badge" alt="CLI Hub"></a>
-  <a href="#-demonstrations"><img src="https://img.shields.io/badge/Demos-14_Apps-green?style=for-the-badge" alt="Demos"></a>
-  <a href="#-test-results"><img src="https://img.shields.io/badge/Tests-1%2C684_Passing-brightgreen?style=for-the-badge" alt="Tests"></a>
+  <a href="#-demonstrations"><img src="https://img.shields.io/badge/Demos-16_Apps-green?style=for-the-badge" alt="Demos"></a>
+  <a href="#-test-results"><img src="https://img.shields.io/badge/Tests-1%2C720_Passing-brightgreen?style=for-the-badge" alt="Tests"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge" alt="License"></a>
 </p>
 
@@ -383,6 +383,7 @@ Each installed CLI ships with a [`SKILL.md`](#-skillmd-generation) inside the Py
 | **🏢 Enterprise & Office** | Convert business applications and productivity tools into agent-accessible systems | NextCloud, GitLab, Grafana, Mattermost, LibreOffice, AppFlowy, NocoDB, Odoo (Community), Plane, ERPNext |
 | **📞 Communication & Collaboration** | Automate meeting scheduling, participant management, recording retrieval, and reporting through structured CLI | Zoom, Jitsi Meet, BigBlueButton, Mattermost |
 | **📐 Diagramming & Visualization** | Create and manipulate diagrams, flowcharts, architecture diagrams, and visual documentation programmatically | Draw.io (diagrams.net), Mermaid, PlantUML, Excalidraw, yEd |
+| **🌐 Network & Infrastructure** | Manage network services, DNS, ad-blocking, and infrastructure through structured CLI commands | AdGuardHome |
 | **✨ AI Content Generation** | Generate professional deliverables (slides, docs, diagrams, websites, research reports) through AI-powered cloud APIs | [AnyGen](https://www.anygen.io), Gamma, Beautiful.ai, Tome |
 
 ---
@@ -400,7 +401,7 @@ AI agents are great at reasoning but terrible at using real professional softwar
 | 💸 "UI automation breaks constantly" | No screenshots, no clicking, no RPA fragility. Pure command-line reliability with structured interfaces |
 | 📊 "Agents need structured data" | Built-in JSON output for seamless agent consumption + human-readable formats for debugging |
 | 🔧 "Custom integrations are expensive" | One Claude plugin auto-generates CLIs for ANY codebase through proven 7-phase pipeline |
-| ⚡ "Prototype vs Production gap" | 1,684 tests with real software validation. Battle-tested across 14 major applications |
+| ⚡ "Prototype vs Production gap" | 1,720 tests with real software validation. Battle-tested across 16 major applications |
 
 ---
 
@@ -617,11 +618,11 @@ Each application received complete, production-ready CLI interfaces — not demo
 </tr>
 <tr>
 <td align="center" colspan="4"><strong>Total</strong></td>
-<td align="center"><strong>✅ 1,684</strong></td>
+<td align="center"><strong>✅ 1,720</strong></td>
 </tr>
 </table>
 
-> **100% pass rate** across all 1,684 tests — 1,223 unit tests + 461 end-to-end tests.
+> **100% pass rate** across all 1,720 tests — 1,247 unit tests + 473 end-to-end tests.
 
 ---
 
@@ -652,8 +653,9 @@ drawio        138 passed  ✅   (116 unit + 22 e2e)
 mermaid        10 passed  ✅   (5 unit + 5 e2e)
 anygen         50 passed  ✅   (40 unit + 10 e2e)
 comfyui        70 passed  ✅   (60 unit + 10 e2e)
+adguardhome    36 passed  ✅   (24 unit + 12 e2e)
 ──────────────────────────────────────────────────────────────────────────────
-TOTAL        1,684 passed  ✅   100% pass rate
+TOTAL        1,720 passed  ✅   100% pass rate
 ```
 
 ---
@@ -715,8 +717,10 @@ cli-anything/
 ├── 📐 drawio/agent-harness/             # Draw.io CLI (138 tests)
 ├── 🧜 mermaid/agent-harness/            # Mermaid Live Editor CLI (10 tests)
 ├── ✨ anygen/agent-harness/             # AnyGen CLI (50 tests)
+├── 🖼️ comfyui/agent-harness/            # ComfyUI CLI (70 tests)
 ├── 🧠 notebooklm/agent-harness/         # NotebookLM CLI (experimental, 21 tests)
-└── 🖼️ comfyui/agent-harness/            # ComfyUI CLI (70 tests)
+├── 🖼️ comfyui/agent-harness/            # ComfyUI CLI (70 tests)
+└── 🛡️ adguardhome/agent-harness/        # AdGuardHome CLI (36 tests)
 ```
 
 Each `agent-harness/` contains an installable Python package under `cli_anything.<software>/` with Click CLI, core modules, utils (including `repl_skin.py` and backend wrapper), and comprehensive tests.
@@ -942,7 +946,7 @@ MIT License — free to use, modify, and distribute.
 
 **CLI-Anything** — *Make any software with a codebase Agent-native.*
 
-<sub>A methodology for the age of AI agents | 14 professional software demos | 1,684 passing tests</sub>
+<sub>A methodology for the age of AI agents | 16 professional software demos | 1,720 passing tests</sub>
 
 <br>
 
