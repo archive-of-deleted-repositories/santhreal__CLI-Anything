@@ -17,6 +17,7 @@ Usage:
 
 import sys
 import json
+import shlex
 import click
 from typing import Optional
 
@@ -112,18 +113,19 @@ def cli(ctx, use_json, use_daemon):
     global _json_output, _session
     _json_output = use_json
 
-    # Check DOMShell availability
-    available, msg = backend.is_available()
-    if not available:
-        if _json_output:
-            click.echo(json.dumps({"error": msg, "type": "dependency_error"}))
-        else:
-            click.echo(f"Error: {msg}", err=True)
-            click.echo(
-                "\nInstall DOMShell Chrome extension:\n"
-                "  https://chromewebstore.google.com/detail/domshell"
-            )
-        sys.exit(1)
+    # Check DOMShell availability (skip for help/version to allow viewing docs without DOMShell)
+    if '--help' not in sys.argv and '--version' not in sys.argv:
+        available, msg = backend.is_available()
+        if not available:
+            if _json_output:
+                click.echo(json.dumps({"error": msg, "type": "dependency_error"}))
+            else:
+                click.echo(f"Error: {msg}", err=True)
+                click.echo(
+                    "\nInstall DOMShell Chrome extension:\n"
+                    "  https://chromewebstore.google.com/detail/domshell"
+                )
+            sys.exit(1)
 
     # Initialize session with daemon mode
     _session = get_session()
@@ -395,8 +397,11 @@ def repl():
                 skin.help(_repl_commands)
                 continue
 
-            # Parse and execute command
-            args = line.split()
+            # Parse and execute command (preserve quoted arguments)
+            try:
+                args = shlex.split(line)
+            except ValueError:
+                args = line.split()  # Fallback for unbalanced quotes
             try:
                 cli.main(args, standalone_mode=False)
             except SystemExit:
