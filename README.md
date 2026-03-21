@@ -547,6 +547,13 @@ Each application received complete, production-ready CLI interfaces — not demo
 <td align="center">✅ 161</td>
 </tr>
 <tr>
+<td align="center"><strong>🌐 Browser</strong></td>
+<td>Browser Automation</td>
+<td><code>cli-anything-browser</code></td>
+<td>DOMShell MCP + Accessibility Tree</td>
+<td align="center">✅ <a href="browser/agent-harness/">New</a></td>
+</tr>
+<tr>
 <td align="center"><strong>📄 LibreOffice</strong></td>
 <td>Office Suite (Writer, Calc, Impress)</td>
 <td><code>cli-anything-libreoffice</code></td>
@@ -731,6 +738,7 @@ cli-anything/
 ├── 🧊 blender/agent-harness/            # Blender CLI (208 tests)
 ├── ✏️ inkscape/agent-harness/            # Inkscape CLI (202 tests)
 ├── 🎵 audacity/agent-harness/           # Audacity CLI (161 tests)
+├── 🌐 browser/agent-harness/            # Browser CLI (DOMShell MCP, new)
 ├── 📄 libreoffice/agent-harness/        # LibreOffice CLI (158 tests)
 ├── 📝 mubu/agent-harness/               # Mubu CLI (96 tests)
 ├── 📹 obs-studio/agent-harness/         # OBS Studio CLI (153 tests)
@@ -742,7 +750,6 @@ cli-anything/
 ├── ✨ anygen/agent-harness/             # AnyGen CLI (50 tests)
 ├── 🖼️ comfyui/agent-harness/            # ComfyUI CLI (70 tests)
 ├── 🧠 notebooklm/agent-harness/         # NotebookLM CLI (experimental, 21 tests)
-├── 🖼️ comfyui/agent-harness/            # ComfyUI CLI (70 tests)
 ├── 🛡️ adguardhome/agent-harness/       # AdGuard Home CLI (36 tests)
 └── 🦙 ollama/agent-harness/             # Ollama CLI (98 tests)
 ```
