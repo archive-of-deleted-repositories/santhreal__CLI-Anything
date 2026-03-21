@@ -9,7 +9,7 @@ designed for humans, without needing a display or mouse.
 
 ## General SOP: Turning Any GUI App into an Agent-Usable CLI
 
-### Phase 1: Codebase Analysis (Token-Aware)
+### Phase 1: Codebase Analysis
 
 **⚠ Binary Application Detection:** Before starting analysis, check if the provided
 path is a compiled application bundle (`.app`, `.exe`, `.AppImage`, `.msi`, `.deb`,
@@ -18,36 +18,18 @@ binaries and no source files, **abort immediately** with a clear message:
 *"CLI-Anything requires access to the software's source code repository, not a
 compiled/installed application. Please provide the source code path or GitHub URL."*
 
-**⚠ Token Budget Management:** LLM context windows are finite. A naive "read everything"
-approach will exceed token limits on any non-trivial codebase. Follow these rules:
+**Scan before reading:** First, list the directory tree (file names and sizes only).
+Build a prioritized reading plan before opening any files.
 
-- **Total read budget:** Keep all file content read during Phase 1 under **~50,000 tokens**
-  (~200KB of text). This leaves room for the prompt, instructions, and completion.
-- **Scan before reading:** First, list the directory tree (file names and sizes only).
-  Build a prioritized reading plan before opening any files.
-- **File size limit:** Skip individual files larger than **100KB**. For important large
-  files, read only the first 200 lines to understand the interface.
-- **Priority order for reading:**
-  1. README, CONTRIBUTING, docs/ (architecture overview)
-  2. CLI entry points and main() functions
-  3. Public API headers / interface definitions
-  4. Core module files (< 50KB each)
-  5. Plugin/extension interfaces
-  6. Configuration schemas
-- **Always exclude:**
-  - Binary files: `.o`, `.so`, `.dylib`, `.a`, `.exe`, `.dll`, `.wasm`, `.pyc`, `.class`, `.jar`
-  - Build artifacts: `build/`, `dist/`, `__pycache__/`, `node_modules/`, `.git/`, `target/`, `cmake-build*/`
-  - Generated code: `*_generated.*`, `*.pb.go`, `*.pb.cc`
-  - Media/assets: images, videos, fonts, archives (`.png`, `.jpg`, `.mp4`, `.zip`, `.tar.*`)
-  - Test fixtures and large data files
-  - Vendored/third-party code (`vendor/`, `third_party/`)
-- **Summarize, don't dump:** For large directories with many similar files (e.g., 50
-  filter implementations), read 2-3 representative examples and note the pattern.
-  Do not read all 50.
-- **Incremental deepening:** Start with high-level architecture files. Only drill into
-  implementation details for areas directly relevant to CLI design.
+**Always exclude from analysis:**
+- Binary files: `.o`, `.so`, `.dylib`, `.a`, `.exe`, `.dll`, `.wasm`, `.pyc`, `.class`, `.jar`
+- Build artifacts: `build/`, `dist/`, `__pycache__/`, `node_modules/`, `.git/`, `target/`, `cmake-build*/`
+- Generated code: `*_generated.*`, `*.pb.go`, `*.pb.cc`
+- Media/assets: images, videos, fonts, archives (`.png`, `.jpg`, `.mp4`, `.zip`, `.tar.*`)
+- Test fixtures and large data files
+- Vendored/third-party code (`vendor/`, `third_party/`)
 
-With the token budget in mind, perform the analysis:
+Perform the analysis:
 
 1. **Identify the backend engine** — Most GUI apps separate presentation from logic.
    Find the core library/framework (e.g., MLT for Shotcut, ImageMagick for GIMP).
@@ -59,6 +41,29 @@ With the token budget in mind, perform the analysis:
    `convert`). These are building blocks.
 5. **Catalog the command/undo system** — If the app has undo/redo, it likely uses a
    command pattern. These commands are your CLI operations.
+
+### Economic Mode (`--economic`)
+
+For users on smaller context windows or who want faster/cheaper generation runs,
+add `--economic` flag to enable stricter token budgets. When `--economic` is active,
+the following additional constraints apply during Phase 1:
+
+- **Total read budget:** Keep all file content read under **~50,000 tokens** (~200KB
+  of text). This leaves room for the prompt, instructions, and completion.
+- **File size limit:** Skip individual files larger than **100KB**. For important large
+  files, read only the first 200 lines to understand the interface.
+- **Priority order for reading:**
+  1. README, CONTRIBUTING, docs/ (architecture overview)
+  2. CLI entry points and main() functions
+  3. Public API headers / interface definitions
+  4. Core module files (< 50KB each)
+  5. Plugin/extension interfaces
+  6. Configuration schemas
+- **Summarize, don't dump:** For large directories with many similar files (e.g., 50
+  filter implementations), read 2-3 representative examples and note the pattern.
+  Do not read all 50.
+- **Incremental deepening:** Start with high-level architecture files. Only drill into
+  implementation details for areas directly relevant to CLI design.
 
 ### Phase 2: CLI Architecture Design
 

@@ -41,11 +41,12 @@ This command is used **after** a CLI harness has already been built with `/cli-a
 - Read the existing test suite to understand what's tested
 - Build a coverage map: `{ function_name: covered | not_covered }`
 
-### Step 2: Analyze Software Capabilities (Token-Aware)
-- Re-scan the software source at `<software-path>` **with token budget management** (see HARNESS.md Phase 1 guidelines)
-- **Before reading files:** build a file manifest with sizes. Prioritize architecturally relevant files. Skip files > 100KB. Keep total content read under ~50,000 tokens.
+### Step 2: Analyze Software Capabilities
+- Re-scan the software source at `<software-path>` (see HARNESS.md Phase 1 guidelines)
+- **Before reading files:** build a file manifest with sizes. Prioritize architecturally relevant files.
 - **Exclude:** binary files, build artifacts, `__pycache__/`, `node_modules/`, `.git/`, media assets, vendored code. See HARNESS.md for the full exclusion list.
 - **If the path is a compiled application** (`.app`, `.exe`, etc.) rather than source code, abort with a clear error.
+- Use `--economic` flag for token-budget-constrained runs (see HARNESS.md)
 - Identify all public APIs, CLI tools, scripting interfaces, and batch-mode operations
 - Focus on functions that produce observable output (renders, exports, transforms, conversions)
 - Categorize by domain (e.g., for GIMP: filters, color adjustments, layer ops, selection tools)
