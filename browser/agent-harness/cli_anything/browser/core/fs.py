@@ -70,7 +70,10 @@ def change_directory(session: "Session", path: str) -> dict:
 
     use_daemon = session.daemon_mode
     result = backend.cd(path, use_daemon=use_daemon)
-    session.set_working_dir(path)
+    # Only update working_dir if backend succeeded
+    if isinstance(result, dict) and "error" not in result:
+        new_working_dir = result.get("path", path)
+        session.set_working_dir(new_working_dir)
     return result
 
 
