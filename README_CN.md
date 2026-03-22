@@ -56,7 +56,7 @@ CLI 是人类和 AI Agent 共通的万能接口：
 
 - **Python 3.10+**
 - 目标软件已安装（如 GIMP、Blender、LibreOffice 或你自己的应用）
-- 支持的 AI 编程工具之一：[Claude Code](#-claude-code) | [OpenClaw](#-openclaw) | [OpenCode](#-opencode) | [Codex](#-codex) | [Qodercli](#-qodercli) | [GitHub Copilot CLI](#-copilotcli) | [更多平台](#-更多平台即将支持)
+- 支持的 AI 编程工具之一：[Claude Code](#-claude-code) | [OpenClaw](#-openclaw) | [OpenCode](#-opencode) | [Codex](#-codex) | [Qodercli](#-qodercli) | [GitHub Copilot CLI](#-github-copilot-cli) | [更多平台](#-更多平台即将支持)
 
 ### 选择你的平台
 
@@ -279,7 +279,8 @@ Use CLI-Anything to validate ./libreoffice
 
 <details>
 
-<summary><h4 id="-copilotcli">⚡ GitHub Copilot CLI <sup><code>社区贡献</code></sup></h4></summary>
+<summary><h4 id="-github-copilot-cli">⚡ GitHub Copilot CLI <sup><code>社区贡献</code></sup></h4></summary>
+
 **第一步：安装插件**
 
 ```bash
@@ -287,6 +288,8 @@ git clone https://github.com/HKUDS/CLI-Anything.git
 cd CLI-Anything
 copilot plugin install ./cli-anything-plugin
 ```
+
+这将CLI-Anything 插件安装到 GitHub Copilot CLI 中。插件应该已经在你的 GitHub Copilot CLI 会话中可用了。
 
 **第二步：在 GitHub Copilot CLI 中使用 CLI-Anything**
 

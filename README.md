@@ -84,7 +84,7 @@ CLI is the universal interface for both humans and AI agents:
 
 - **Python 3.10+**
 - Target software installed (e.g., GIMP, Blender, LibreOffice, or your own application)
-- A supported AI coding agent: [Claude Code](#-claude-code) | [OpenClaw](#-openclaw) | [OpenCode](#-opencode) | [Codex](#-codex) | [Qodercli](#-qodercli) | [GitHub Copilot CLI](#-copilotcli) | [More Platforms](#-more-platforms-coming-soon)
+- A supported AI coding agent: [Claude Code](#-claude-code) | [OpenClaw](#-openclaw) | [OpenCode](#-opencode) | [Codex](#-codex) | [Qodercli](#-qodercli) | [GitHub Copilot CLI](#-github-copilot-cli) | [More Platforms](#-more-platforms-coming-soon)
 
 ### Pick Your Platform
 
@@ -329,7 +329,8 @@ OpenCode commands, while keeping the generated Python harness format unchanged.
 
 <details>
 
-<summary><h4 id="-copilotcli">⚡ GitHub Copilot CLI <sup><code>Community</code></sup></h4></summary>
+<summary><h4 id="-github-copilot-cli">⚡ GitHub Copilot CLI <sup><code>Community</code></sup></h4></summary>
+
 **Step 1: Install the Plugin**
 
 ```bash
@@ -337,6 +338,8 @@ git clone https://github.com/HKUDS/CLI-Anything.git
 cd CLI-Anything
 copilot plugin install ./cli-anything-plugin
 ```
+
+This installs the CLI-Anything plugin to GitHub Copilot CLI. The plugin should now be available in your GitHub Copilot CLI session.
 
 **Step 2: Use CLI-Anything from GitHub Copilot CLI**
 
