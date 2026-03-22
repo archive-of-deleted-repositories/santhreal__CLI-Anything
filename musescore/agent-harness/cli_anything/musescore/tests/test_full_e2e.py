@@ -1,7 +1,7 @@
 """End-to-end tests for cli-anything-musescore.
 
 These tests require a real MuseScore 4 (mscore) installation and
-use the sample files in test-mscore/sia-snowman/.
+use the sample files in musescore/test-mscore/twinkle-twinkle/.
 
 Run with: pytest cli_anything/musescore/tests/test_full_e2e.py -v -s
 """
@@ -17,13 +17,11 @@ import pytest
 
 # ── Test fixture paths ────────────────────────────────────────────────
 
-# Walk up from this file to find the test-mscore directory
+# Test fixtures live alongside this file
 _THIS_DIR = Path(__file__).resolve().parent
-_REPO_ROOT = _THIS_DIR.parent.parent.parent.parent.parent
-_SAMPLE_DIR = _REPO_ROOT / "test-mscore" / "sia-snowman"
-_SAMPLE_MXL = _SAMPLE_DIR / "sia-snowman-Db.mxl"
-_SAMPLE_MSCZ = _SAMPLE_DIR / "sia-snowman-C.mscz"
-_SAMPLE_MID = _SAMPLE_DIR / "sia-snowman-Db.mid"
+_SAMPLE_DIR = _THIS_DIR / "fixtures" / "twinkle-twinkle"
+_SAMPLE_MXL = _SAMPLE_DIR / "twinkle_twinkle_G.mxl"
+_SAMPLE_MSCZ = _SAMPLE_DIR / "twinkle_twinkle_G.mscz"
 
 
 def _resolve_cli(name: str) -> list[str]:
@@ -147,8 +145,8 @@ class TestExportE2E:
 @requires_mscore
 @requires_samples
 class TestTransposeE2E:
-    def test_transpose_db_to_c(self):
-        """Transpose Db major MXL to C major, verify key signature."""
+    def test_transpose_g_to_c(self):
+        """Transpose G major MXL to C major, verify key signature."""
         with tempfile.NamedTemporaryFile(suffix=".mscz", delete=False) as f:
             out = f.name
         try:
@@ -170,7 +168,7 @@ class TestTransposeE2E:
             tree = read_score_tree(xml_out)
             keysig = get_key_signature(tree)
             assert keysig == 0, f"Expected keysig=0 (C major), got {keysig}"
-            print(f"  Transposed Db→C: keysig={keysig}")
+            print(f"  Transposed G→C: keysig={keysig}")
             os.unlink(xml_out)
         finally:
             if os.path.exists(out):
@@ -338,7 +336,7 @@ class TestCLISubprocess:
             transposed = os.path.join(tmpdir, "transposed.mscz")
             pdf_out = os.path.join(tmpdir, "output.pdf")
 
-            # 1. Transpose Db → C
+            # 1. Transpose G → C
             cmd = _resolve_cli("cli-anything-musescore") + [
                 "--json", "transpose", "by-key",
                 "-i", str(_SAMPLE_MXL),
