@@ -289,7 +289,7 @@ cd CLI-Anything
 copilot plugin install ./cli-anything-plugin
 ```
 
-这将CLI-Anything 插件安装到 GitHub Copilot CLI 中。插件应该已经在你的 GitHub Copilot CLI 会话中可用了。
+这将 CLI-Anything 插件安装到 GitHub Copilot CLI 中。插件应该已经在你的 GitHub Copilot CLI 会话中可用了。
 
 **第二步：在 GitHub Copilot CLI 中使用 CLI-Anything**
 
