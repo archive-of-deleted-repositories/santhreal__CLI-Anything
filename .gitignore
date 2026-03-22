@@ -18,6 +18,10 @@
 !/assets/
 !/.claude-plugin/
 !/.github/
+/.github/*
+!/.github/workflows/
+!/.github/scripts/
+!/.github/PULL_REQUEST_TEMPLATE.md
 
 # Step 3: Allow cli-anything-plugin, codex-skill, and skill_generation tests
 !/cli-anything-plugin/
