@@ -11,30 +11,7 @@ import os
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
-
-def _locked_save_json(path: str, data: Any, **dump_kwargs: Any) -> None:
-    """Persist JSON data to *path* using atomic file locking."""
-    try:
-        f = open(path, "r+")
-    except FileNotFoundError:
-        os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
-        f = open(path, "w")
-    with f:
-        _locked = False
-        try:
-            import fcntl
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-            _locked = True
-        except (ImportError, OSError):
-            pass
-        try:
-            f.seek(0)
-            f.truncate()
-            json.dump(data, f, **dump_kwargs)
-            f.flush()
-        finally:
-            if _locked:
-                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
+from cli_anything.krita.utils.io import locked_save_json
 
 
 class Session:
@@ -119,7 +96,7 @@ class Session:
                 for ts, lbl, state in self._snapshots
             ],
         }
-        _locked_save_json(path, data, indent=2, default=str)
+        locked_save_json(path, data, indent=2, default=str)
         self._session_path = path
 
     def load(self, path: str) -> None:

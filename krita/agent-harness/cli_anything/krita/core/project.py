@@ -10,6 +10,8 @@ import os
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
+from cli_anything.krita.utils.io import locked_save_json
+
 
 PROJECT_VERSION = "1.0.0"
 
@@ -24,56 +26,17 @@ VALID_LAYER_TYPES = (
 )
 
 VALID_FILTERS = (
-    "blur",
-    "sharpen",
-    "desaturate",
-    "levels",
-    "curves",
-    "brightness-contrast",
-    "hue-saturation",
-    "color-balance",
-    "unsharp-mask",
-    "posterize",
-    "threshold",
+    "blur", "gaussian-blur", "motion-blur", "lens-blur",
+    "sharpen", "unsharp-mask",
+    "brightness-contrast", "levels", "curves", "hue-saturation",
+    "color-balance", "desaturate", "invert", "posterize", "threshold",
+    "auto-contrast", "normalize",
+    "emboss", "edge-detection", "oil-paint", "pixelize",
+    "noise-reduction", "halftone",
 )
 
 VALID_COLORSPACES = ("RGBA", "RGB", "GRAYA", "GRAY", "CMYKA", "CMYK")
 VALID_DEPTHS = ("U8", "U16", "F16", "F32")
-
-
-# ---------------------------------------------------------------------------
-# Atomic file locking helper
-# ---------------------------------------------------------------------------
-
-def _locked_save_json(path: str, data: dict, **dump_kwargs) -> None:
-    """Atomically write JSON with exclusive file locking.
-
-    Uses fcntl on Unix; silently falls back to unlocked write on Windows
-    where fcntl is unavailable.
-    """
-    path = str(path)
-    try:
-        f = open(path, "r+")
-    except FileNotFoundError:
-        os.makedirs(os.path.dirname(os.path.abspath(path)), exist_ok=True)
-        f = open(path, "w")
-    with f:
-        _locked = False
-        try:
-            import fcntl
-            fcntl.flock(f.fileno(), fcntl.LOCK_EX)
-            _locked = True
-        except (ImportError, OSError):
-            pass
-        try:
-            f.seek(0)
-            f.truncate()
-            json.dump(data, f, **dump_kwargs)
-            f.flush()
-        finally:
-            if _locked:
-                import fcntl  # noqa: F811
-                fcntl.flock(f.fileno(), fcntl.LOCK_UN)
 
 
 # ---------------------------------------------------------------------------
@@ -232,7 +195,7 @@ def save_project(project: Dict[str, Any], path: Optional[str] = None) -> str:
         path = os.path.join(os.getcwd(), f"{safe_name}.krita.json")
 
     _touch_modified(project)
-    _locked_save_json(path, project, indent=2, default=str)
+    locked_save_json(path, project, indent=2, default=str)
     return os.path.abspath(path)
 
 

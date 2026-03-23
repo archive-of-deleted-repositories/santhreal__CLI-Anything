@@ -12,7 +12,7 @@ import tempfile
 import xml.etree.ElementTree as ET
 import zlib
 import zipfile
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -243,7 +243,7 @@ def _build_documentinfo_xml(project: dict) -> bytes:
     creator_el = ET.SubElement(about, "creator")
     creator_el.text = author
     date_el = ET.SubElement(about, "date")
-    date_el.text = datetime.utcnow().isoformat()
+    date_el.text = datetime.now(timezone.utc).isoformat()
 
     tree = ET.ElementTree(doc)
     from io import BytesIO

@@ -176,6 +176,7 @@ def export_file(
     output_path: str | Path,
     *,
     format: Optional[str] = None,
+    export_options: Optional[Dict[str, Any]] = None,
     timeout: int = 300,
 ) -> Dict[str, Any]:
     """Export *input_path* to *output_path* using Krita's CLI.
@@ -187,6 +188,8 @@ def export_file(
         format: If provided, override the output format (e.g. ``"png"``).
             The extension of *output_path* will still be respected for the
             filename.
+        export_options: Optional dict of key-value pairs forwarded to Krita
+            via ``--export-option key=value`` flags (e.g. compression, quality).
         timeout: Maximum seconds to wait for Krita.
 
     Returns:
@@ -200,7 +203,11 @@ def export_file(
     # Ensure output directory exists
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-    args = [krita, "--export", "--export-filename", output_path, input_path]
+    args = [krita, "--export", "--export-filename", output_path]
+    if export_options:
+        for key, value in export_options.items():
+            args += ["--export-option", f"{key}={value}"]
+    args.append(input_path)
 
     result = _run(args, timeout=timeout)
     result["output_path"] = output_path

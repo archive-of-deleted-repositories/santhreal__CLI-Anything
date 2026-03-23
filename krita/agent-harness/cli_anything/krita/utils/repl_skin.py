@@ -47,6 +47,7 @@ _ACCENT_COLORS = {
     "obs_studio":  "\033[38;5;55m",    # purple
     "kdenlive":    "\033[38;5;69m",    # slate blue
     "shotcut":     "\033[38;5;35m",    # teal green
+    "krita":       "\033[38;5;98m",    # purple (Krita brand)
 }
 _DEFAULT_ACCENT = "\033[38;5;75m"      # default sky blue
 
@@ -515,6 +516,7 @@ _ANSI_256_TO_HEX = {
     "\033[38;5;55m":  "#5f00af",  # obs purple
     "\033[38;5;69m":  "#5f87ff",  # kdenlive slate blue
     "\033[38;5;75m":  "#5fafff",  # default sky blue
+    "\033[38;5;98m":  "#875fd7",  # krita purple
     "\033[38;5;80m":  "#5fd7d7",  # brand cyan
     "\033[38;5;208m": "#ff8700",  # blender deep orange
     "\033[38;5;214m": "#ffaf00",  # gimp warm orange
