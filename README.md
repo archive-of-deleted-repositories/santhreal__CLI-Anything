@@ -84,7 +84,7 @@ CLI is the universal interface for both humans and AI agents:
 
 - **Python 3.10+**
 - Target software installed (e.g., GIMP, Blender, LibreOffice, or your own application)
-- A supported AI coding agent: [Claude Code](#-claude-code) | [OpenClaw](#-openclaw) | [OpenCode](#-opencode) | [Codex](#-codex) | [Qodercli](#-qodercli) | [More Platforms](#-more-platforms-coming-soon)
+- A supported AI coding agent: [Claude Code](#-claude-code) | [OpenClaw](#-openclaw) | [OpenCode](#-opencode) | [Codex](#-codex) | [Qodercli](#-qodercli) | [GitHub Copilot CLI](#-github-copilot-cli) | [More Platforms](#-more-platforms-coming-soon)
 
 ### Pick Your Platform
 
@@ -328,6 +328,30 @@ OpenCode commands, while keeping the generated Python harness format unchanged.
 </details>
 
 <details>
+
+<summary><h4 id="-github-copilot-cli">⚡ GitHub Copilot CLI <sup><code>Community</code></sup></h4></summary>
+
+**Step 1: Install the Plugin**
+
+```bash
+git clone https://github.com/HKUDS/CLI-Anything.git
+cd CLI-Anything
+copilot plugin install ./cli-anything-plugin
+```
+
+This installs the CLI-Anything plugin to GitHub Copilot CLI. The plugin should now be available in your GitHub Copilot CLI session.
+
+**Step 2: Use CLI-Anything from GitHub Copilot CLI**
+
+```bash
+/cli-anything:cli-anything ./gimp
+/cli-anything:refine ./gimp "batch processing and filters"
+/cli-anything:validate ./gimp
+```
+
+</details>
+
+<details>
 <summary><h4 id="-more-platforms-coming-soon">🔮 More Platforms (Coming Soon)</h4></summary>
 
 CLI-Anything is designed to be platform-agnostic. Support for more AI coding agents is planned:
@@ -547,6 +571,13 @@ Each application received complete, production-ready CLI interfaces — not demo
 <td align="center">✅ 161</td>
 </tr>
 <tr>
+<td align="center"><strong>🌐 Browser</strong></td>
+<td>Browser Automation</td>
+<td><code>cli-anything-browser</code></td>
+<td>DOMShell MCP + Accessibility Tree</td>
+<td align="center">✅ <a href="browser/agent-harness/">New</a></td>
+</tr>
+<tr>
 <td align="center"><strong>📄 LibreOffice</strong></td>
 <td>Office Suite (Writer, Calc, Impress)</td>
 <td><code>cli-anything-libreoffice</code></td>
@@ -587,6 +618,13 @@ Each application received complete, production-ready CLI interfaces — not demo
 <td><code>cli-anything-zoom</code></td>
 <td>Zoom REST API (OAuth2)</td>
 <td align="center">✅ 22</td>
+</tr>
+<tr>
+<td align="center"><strong>🎵 MuseScore</strong></td>
+<td>Music Notation</td>
+<td><code>cli-anything-musescore</code></td>
+<td>mscore CLI (MSCX/MusicXML)</td>
+<td align="center">✅ 56</td>
 </tr>
 <tr>
 <td align="center"><strong>📐 Draw.io</strong></td>
@@ -739,18 +777,19 @@ cli-anything/
 ├── 🧊 blender/agent-harness/            # Blender CLI (208 tests)
 ├── ✏️ inkscape/agent-harness/            # Inkscape CLI (202 tests)
 ├── 🎵 audacity/agent-harness/           # Audacity CLI (161 tests)
+├── 🌐 browser/agent-harness/            # Browser CLI (DOMShell MCP, new)
 ├── 📄 libreoffice/agent-harness/        # LibreOffice CLI (158 tests)
 ├── 📝 mubu/agent-harness/               # Mubu CLI (96 tests)
 ├── 📹 obs-studio/agent-harness/         # OBS Studio CLI (153 tests)
 ├── 🎞️ kdenlive/agent-harness/           # Kdenlive CLI (155 tests)
 ├── 🎬 shotcut/agent-harness/            # Shotcut CLI (154 tests)
 ├── 📞 zoom/agent-harness/               # Zoom CLI (22 tests)
+├── 🎵 musescore/agent-harness/          # MuseScore CLI (56 tests)
 ├── 📐 drawio/agent-harness/             # Draw.io CLI (138 tests)
 ├── 🧜 mermaid/agent-harness/            # Mermaid Live Editor CLI (10 tests)
 ├── ✨ anygen/agent-harness/             # AnyGen CLI (50 tests)
 ├── 🖼️ comfyui/agent-harness/            # ComfyUI CLI (70 tests)
 ├── 🧠 notebooklm/agent-harness/         # NotebookLM CLI (experimental, 21 tests)
-├── 🖼️ comfyui/agent-harness/            # ComfyUI CLI (70 tests)
 ├── 🛡️ adguardhome/agent-harness/       # AdGuard Home CLI (36 tests)
 ├── 🦙 ollama/agent-harness/             # Ollama CLI (98 tests)
 └── 🎨 sketch/agent-harness/             # Sketch CLI (19 tests, Node.js)

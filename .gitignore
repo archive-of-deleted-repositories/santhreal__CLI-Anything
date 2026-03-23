@@ -44,9 +44,12 @@
 !/sketch/
 !/drawio/
 !/mermaid/
+!/comfyui/
 !/adguardhome/
 !/novita/
 !/ollama/
+!/browser/
+!/musescore/
 
 # Step 5: Inside each software dir, ignore everything (including dotfiles)
 /gimp/*
@@ -77,10 +80,16 @@
 /drawio/.*
 /mermaid/*
 /mermaid/.*
+/comfyui/*
+/comfyui/.*
 /adguardhome/*
 /adguardhome/.*
 /ollama/*
 /ollama/.*
+/browser/*
+/browser/.*
+/musescore/*
+/musescore/.*
 
 # Step 6: ...except agent-harness/
 !/gimp/agent-harness/
@@ -97,9 +106,12 @@
 !/sketch/agent-harness/
 !/drawio/agent-harness/
 !/mermaid/agent-harness/
+!/comfyui/agent-harness/
 !/adguardhome/agent-harness/
 !/novita/agent-harness/
 !/ollama/agent-harness/
+!/browser/agent-harness/
+!/musescore/agent-harness/
 
 # Step 7: Ignore build artifacts within allowed dirs
 **/__pycache__/
