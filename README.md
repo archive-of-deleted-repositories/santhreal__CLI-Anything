@@ -41,16 +41,28 @@ CLI-Anything: Bridging the Gap Between AI Agents and the World's Software</stron
 
 > Thanks to all invaluable efforts from the community! More updates continuously on the way everyday..
 
+- **2026-03-23** 🤖 Launched **CLI-Hub meta-skill** — agents can now discover and install CLIs autonomously via [`cli-hub-skill/SKILL.md`](cli-hub-skill/SKILL.md). The catalog auto-updates from `registry.json` via GitHub Actions, making the entire marketplace agent-native.
+
+- **2026-03-22** 🎵 **MuseScore CLI** merged with transpose, export, and instrument management. Community contributions continue expanding domain coverage.
+
+- **2026-03-21** 🔧 Infrastructure improvements — refined test harnesses and documentation across multiple CLIs. Enhanced Windows compatibility for several backends.
+
+- **2026-03-20** 🌐 **Novita AI** CLI added for OpenAI-compatible API access. Registry metadata improvements for better hub discovery.
+
+- **2026-03-19** 📦 Package structure refinements across harnesses. Improved SKILL.md generation with better command documentation.
+
+- **2026-03-18** 🧪 Test coverage expansion — additional E2E scenarios and edge case validation across multiple CLIs.
+
 - **2026-03-17** 🌐 Launched the **[CLI-Hub](https://hkuds.github.io/CLI-Anything/)** — a central registry where you can browse, search, and install any CLI with a single `pip` command. Contributors can add new CLIs or update existing ones by simply opening a PR with a `registry.json` entry. The hub updates automatically on merge.
+
+<details>
+<summary>Earlier news</summary>
 
 - **2026-03-16** 🤖 Added **SKILL.md generation** (Phase 6.5) — every generated CLI now ships with an AI-discoverable skill definition inside the Python package. ReplSkin auto-detects the skill file after `pip install`, and the REPL banner displays the absolute path for agents. Includes `skill_generator.py`, Jinja2 template, `package_data` in all setup.py files, and 51 new tests.
 
 - **2026-03-15** 🐾 Support for **OpenClaw** from the community! Merged Windows `cygpath` guard to ensure CLI-Anything works reliably in Windows bash environments. Community contributions continue to strengthen cross-platform support.
 
 - **2026-03-14** 🔒 Fixed a GIMP Script-Fu path injection vulnerability and added **Japanese README** translation. OpenCode version requirements documented alongside several Windows compatibility improvements.
-
-<details>
-<summary>Earlier news</summary>
 
 - **2026-03-13** 🔌 **Qodercli** plugin officially merged as a community contribution with dedicated setup scripts. Codex skill gained a Windows install script, and placeholder URLs were cleaned up across the project.
 
@@ -381,6 +393,32 @@ cli-anything-gimp
 ```
 
 Each installed CLI ships with a [`SKILL.md`](#-skillmd-generation) inside the Python package (`cli_anything/<software>/skills/SKILL.md`). The REPL banner automatically displays the absolute path to this file so AI agents know exactly where to read the skill definition. No extra configuration needed — `pip install` makes the skill discoverable.
+
+---
+
+## 🤖 Empower Your Agents with CLI-Hub
+
+CLI-Hub lets agents autonomously discover and install the CLIs they need — zero human intervention required.
+
+CLI-Anything ships a **meta-skill** at [`cli-hub-skill/SKILL.md`](cli-hub-skill/SKILL.md) that lets any AI agent browse, pick, and install from the full catalog of community CLIs — no human in the loop.
+
+**How it works:**
+
+1. Point your agent at the [CLI-Hub SKILL.md](https://raw.githubusercontent.com/HKUDS/CLI-Anything/main/cli-hub-skill/SKILL.md)
+2. The agent reads the catalog — 20+ CLIs organized by category with one-line `pip install` commands
+3. The agent installs whichever CLI fits the task, then reads that CLI's own SKILL.md for detailed usage
+
+```bash
+# Example: agent needs to edit images
+# 1. Agent reads the hub skill, finds GIMP CLI under "Image"
+# 2. Agent runs:
+pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=gimp/agent-harness
+# 3. Agent uses cli-anything-gimp --json for all operations
+```
+
+The meta-skill auto-updates whenever `registry.json` changes — new community CLIs show up automatically.
+
+> **For Claude Code users:** You can also copy [`cli-hub-skill/SKILL.md`](cli-hub-skill/SKILL.md) into your project or skills directory so Claude can discover available CLIs on its own.
 
 ---
 

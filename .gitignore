@@ -28,6 +28,7 @@
 !/codex-skill/
 !/skill_generation/
 !/openclaw-skill/
+!/cli-hub-skill/
 
 # Step 4: Allow each software dir (top level only)
 !/gimp/

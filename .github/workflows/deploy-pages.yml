@@ -6,8 +6,10 @@ on:
       - main
     paths:
       - '*/agent-harness/**'
+      - 'registry.json'
       - '.github/workflows/deploy-pages.yml'
       - '.github/scripts/update_registry_dates.py'
+      - '.github/scripts/generate_meta_skill.py'
   workflow_dispatch:
 
 permissions:
