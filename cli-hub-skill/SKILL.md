@@ -1,13 +1,13 @@
 ---
 name: cli-anything-hub
 description: >-
-  Browse and install 20+ agent-native CLI tools for GUI software.
+  Browse and install 21+ agent-native CLI tools for GUI software.
   Covers image editing, 3D, video, audio, office, diagrams, AI, and more.
 ---
 
 # CLI-Anything Hub
 
-Agent-native stateful CLI interfaces for 20 applications. All CLIs support `--json` output, REPL mode, and undo/redo.
+Agent-native stateful CLI interfaces for 21 applications. All CLIs support `--json` output, REPL mode, and undo/redo.
 
 ## Quick Install
 
@@ -47,6 +47,12 @@ pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=gimp/agen
 | Name | Description | Install |
 |------|-------------|---------|
 | **Zoom** | Meeting management via Zoom REST API (OAuth2) | `pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=zoom/agent-harness` |
+
+### Design
+
+| Name | Description | Install |
+|------|-------------|---------|
+| **Sketch** | Generate Sketch design files (.sketch) from JSON design specifications via sketch-constructor | `cd sketch/agent-harness && npm install && npm link` |
 
 ### Diagrams
 
