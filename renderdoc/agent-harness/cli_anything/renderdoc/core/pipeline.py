@@ -736,7 +736,7 @@ def _serialize_cbuffer_var(v) -> Dict[str, Any]:
     return d
 
 
-def dump_shader_reflection(refl, include_file_contents: bool = False) -> Dict[str, Any]:
+def dump_shader_reflection(refl, include_file_contents: bool = False) -> Optional[Dict[str, Any]]:
     """Serialize a ShaderReflection object to a JSON-friendly dict.
 
     Maps all fields from the RenderDoc Python API ShaderReflection class.

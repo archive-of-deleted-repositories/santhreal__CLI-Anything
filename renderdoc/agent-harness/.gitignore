@@ -1,3 +1,6 @@
+# Bundled RenderDoc native bindings must not be committed (use system install).
+cli_anything/renderdoc/native/
+
 # Python
 __pycache__/
 *.pyc

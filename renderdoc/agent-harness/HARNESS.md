@@ -20,7 +20,7 @@ agent-harness/
         │   ├── capture.py          # Capture file open/close/metadata/convert
         │   ├── actions.py          # Draw call / action tree navigation
         │   ├── textures.py         # Texture listing, pixel picking, export
-        │   ├── pipeline.py         # Pipeline state, shader disassembly, cbuffers
+        │   ├── pipeline.py         # Pipeline state, shader export, diff, cbuffers
         │   ├── resources.py        # Buffer/resource enumeration and reading
         │   ├── mesh.py             # Vertex input/output decoding
         │   └── counters.py         # GPU performance counters
@@ -42,7 +42,7 @@ agent-harness/
 | `capture`   | `info`, `thumb`, `convert`                       |
 | `actions`   | `list`, `summary`, `find`, `get`                 |
 | `textures`  | `list`, `get`, `save`, `save-outputs`, `pick`    |
-| `pipeline`  | `state`, `disasm`, `cbuffer`                     |
+| `pipeline`  | `state`, `shader-export`, `cbuffer`, `diff`      |
 | `resources` | `list`, `buffers`, `read-buffer`                 |
 | `mesh`      | `inputs`, `outputs`                              |
 | `counters`  | `list`, `fetch`                                  |
@@ -77,6 +77,6 @@ agent-harness/
 
 ## Dependencies
 
-- **Required**: `click>=8.0`, `python>=3.8`
+- **Required**: `click>=8.0`, `prompt-toolkit>=3.0`, `python>=3.10`
 - **Optional** (runtime): `renderdoc` Python module (from RenderDoc installation)
 - **Test**: `pytest>=7.0`

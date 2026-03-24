@@ -34,6 +34,16 @@ _capture_handle = None  # type: ignore
 _repl_mode = False
 
 
+def _close_all_captures():
+    global _capture_handle, _capture_handle_b
+    if _capture_handle is not None:
+        _capture_handle.close()
+        _capture_handle = None
+    if _capture_handle_b is not None:
+        _capture_handle_b.close()
+        _capture_handle_b = None
+
+
 def _get_export_dir(ctx: click.Context, subfolder: str = "") -> str:
     """Return the default export directory for the current capture.
 
@@ -810,13 +820,11 @@ def pipeline_diff_cmd(ctx, event_a, event_b, capture_b, compact, output):
 @cli.result_callback()
 @click.pass_context
 def cleanup(ctx, *args, **kwargs):
-    global _capture_handle, _capture_handle_b
-    if _capture_handle is not None:
-        _capture_handle.close()
-        _capture_handle = None
-    if _capture_handle_b is not None:
-        _capture_handle_b.close()
-        _capture_handle_b = None
+    global _repl_mode
+    # REPL invokes cli.main() per line; keep captures open until repl() exits.
+    if _repl_mode:
+        return
+    _close_all_captures()
 
 
 # ===========================================================================
@@ -853,33 +861,35 @@ def repl(ctx):
     capture_path = ctx.obj.get("capture_path", "")
     context = os.path.basename(capture_path) if capture_path else ""
 
-    while True:
-        try:
-            line = skin.get_input(pt_session, project_name=context, modified=False)
-            if not line:
-                continue
-            if line.lower() in ("quit", "exit", "q"):
+    try:
+        while True:
+            try:
+                line = skin.get_input(pt_session, project_name=context, modified=False)
+                if not line:
+                    continue
+                if line.lower() in ("quit", "exit", "q"):
+                    skin.print_goodbye()
+                    break
+                if line.lower() == "help":
+                    skin.help(_repl_commands)
+                    continue
+
+                args = line.split()
+                try:
+                    cli.main(args, standalone_mode=False)
+                except SystemExit:
+                    pass
+                except click.exceptions.UsageError as e:
+                    skin.warning("Usage error: %s" % e)
+                except Exception as e:
+                    skin.error("%s" % e)
+
+            except (EOFError, KeyboardInterrupt):
                 skin.print_goodbye()
                 break
-            if line.lower() == "help":
-                skin.help(_repl_commands)
-                continue
-
-            args = line.split()
-            try:
-                cli.main(args, standalone_mode=False)
-            except SystemExit:
-                pass
-            except click.exceptions.UsageError as e:
-                skin.warning("Usage error: %s" % e)
-            except Exception as e:
-                skin.error("%s" % e)
-
-        except (EOFError, KeyboardInterrupt):
-            skin.print_goodbye()
-            break
-
-    _repl_mode = False
+    finally:
+        _close_all_captures()
+        _repl_mode = False
 
 
 # ===========================================================================

@@ -8,20 +8,12 @@ Run with: pytest test_core.py -v
 from __future__ import annotations
 
 import json
-import os
-import sys
 import struct
+import sys
+from pathlib import Path
 from unittest.mock import MagicMock, patch, PropertyMock
 
 import pytest
-
-# ---------------------------------------------------------------------------
-# Ensure the package is importable
-# ---------------------------------------------------------------------------
-HARNESS_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-if HARNESS_ROOT not in sys.path:
-    sys.path.insert(0, HARNESS_ROOT)
-
 
 # ===========================================================================
 # Test utils/output.py
@@ -498,14 +490,19 @@ class TestCLIHelp:
 # ===========================================================================
 
 class TestCLISubprocess:
-    """Test CLI via subprocess (requires pip install -e .)"""
+    """Test CLI via subprocess from agent-harness root (namespace on cwd)."""
 
     def test_cli_help_subprocess(self):
         import subprocess
+
+        harness_root = Path(__file__).resolve().parents[3]
         try:
             result = subprocess.run(
                 [sys.executable, "-m", "cli_anything.renderdoc.renderdoc_cli", "--help"],
-                capture_output=True, text=True, timeout=10,
+                capture_output=True,
+                text=True,
+                timeout=10,
+                cwd=str(harness_root),
             )
             assert result.returncode == 0
             assert "RenderDoc CLI" in result.stdout

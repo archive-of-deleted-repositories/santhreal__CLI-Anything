@@ -36,9 +36,10 @@ pytest cli_anything/renderdoc/tests/ -v
 | core/actions.py         | 9     | ✅ Pass |
 | core/textures.py        | 4     | ✅ Pass |
 | core/resources.py       | 5     | ✅ Pass |
+| core/diff.py            | 12    | ✅ Pass |
 | CLI help (all groups)   | 8     | ✅ Pass |
 | CLI subprocess          | 1     | ✅ Pass |
-| **Total Unit**          | **33**| **✅ All Pass** |
+| **Total Unit**          | **45**| **✅ All Pass** |
 | E2E (capture info)      | 2     | ⏭️ Skip (no RD) |
 | E2E (actions)           | 4     | ⏭️ Skip (no RD) |
 | E2E (textures)          | 2     | ⏭️ Skip (no RD) |
@@ -87,10 +88,22 @@ cli_anything/renderdoc/tests/test_core.py::TestCLIHelp::test_resources_help PASS
 cli_anything/renderdoc/tests/test_core.py::TestCLIHelp::test_mesh_help PASSED
 cli_anything/renderdoc/tests/test_core.py::TestCLIHelp::test_counters_help PASSED
 cli_anything/renderdoc/tests/test_core.py::TestCLISubprocess::test_cli_help_subprocess PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_identical_snapshots PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_different_viewport PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_float_tolerance PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_float_nan_equal PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_diff_lists_only_in_one_side PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_diff_dicts_missing_key PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_diff_dicts_identical PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_diff_dicts_none_inputs PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_stage_diff_shader_changed PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_cbuffer_variable_diff PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_cbuffer_variable_identical PASSED
+cli_anything/renderdoc/tests/test_core.py::TestDiffModule::test_output_table_extra_columns PASSED
 
-============================= 33 passed in 0.15s ==============================
+============================= 45 passed in 0.15s ==============================
 
 cli_anything/renderdoc/tests/test_full_e2e.py - 14 skipped (no RenderDoc)
 
-============================= 47 total, 33 passed, 14 skipped ================
+============================= 59 total, 45 passed, 14 skipped ================
 ```

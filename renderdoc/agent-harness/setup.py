@@ -1,18 +1,24 @@
 """Setup for cli-anything-renderdoc package."""
 
+from pathlib import Path
+
 from setuptools import setup, find_namespace_packages
+
+_README = Path(__file__).parent / "cli_anything" / "renderdoc" / "README.md"
+_long_desc = _README.read_text(encoding="utf-8") if _README.is_file() else ""
 
 setup(
     name="cli-anything-renderdoc",
     version="0.1.0",
     description="CLI harness for RenderDoc graphics debugger",
-    long_description=open("cli_anything/renderdoc/README.md").read(),
+    long_description=_long_desc,
     long_description_content_type="text/markdown",
     author="cli-anything",
     packages=find_namespace_packages(include=["cli_anything.*"]),
     python_requires=">=3.10",
     install_requires=[
         "click>=8.0",
+        "prompt-toolkit>=3.0",
     ],
     extras_require={
         "test": ["pytest>=7.0"],
@@ -23,7 +29,7 @@ setup(
         ],
     },
     package_data={
-        "cli_anything.renderdoc": ["skills/*.md", "README.md", "native/*.pyd", "native/*.dll"],
+        "cli_anything.renderdoc": ["skills/*.md", "README.md"],
     },
     classifiers=[
         "Programming Language :: Python :: 3",

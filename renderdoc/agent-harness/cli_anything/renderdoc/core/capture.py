@@ -37,6 +37,31 @@ def _require_rd():
 
 
 # ---------------------------------------------------------------------------
+# Global RenderDoc replay API (InitialiseReplay / ShutdownReplay) — refcounted
+# ---------------------------------------------------------------------------
+_replay_refcount = 0
+
+
+def _ensure_replay_api():
+    """Initialise RenderDoc replay once; pair with ``_release_replay_api`` per handle."""
+    global _replay_refcount
+    _require_rd()
+    if _replay_refcount == 0:
+        rd.InitialiseReplay(rd.GlobalEnvironment(), [])
+    _replay_refcount += 1
+
+
+def _release_replay_api():
+    """Shut down replay when the last CaptureHandle in the process closes."""
+    global _replay_refcount
+    if not HAS_RD or _replay_refcount <= 0:
+        return
+    _replay_refcount -= 1
+    if _replay_refcount == 0:
+        rd.ShutdownReplay()
+
+
+# ---------------------------------------------------------------------------
 # Capture file handle wrapper
 # ---------------------------------------------------------------------------
 class CaptureHandle:
@@ -48,13 +73,18 @@ class CaptureHandle:
         if not os.path.isfile(self.path):
             raise FileNotFoundError(f"Capture file not found: {self.path}")
 
-        rd.InitialiseReplay(rd.GlobalEnvironment(), [])
-        self._cap = rd.OpenCaptureFile()
-        result = self._cap.OpenFile(self.path, "", None)
-        if result != rd.ResultCode.Succeeded:
-            raise RuntimeError(f"Failed to open capture: {result}")
+        _ensure_replay_api()
+        try:
+            self._cap = rd.OpenCaptureFile()
+            result = self._cap.OpenFile(self.path, "", None)
+            if result != rd.ResultCode.Succeeded:
+                raise RuntimeError(f"Failed to open capture: {result}")
+        except Exception:
+            _release_replay_api()
+            raise
 
         self._controller: Any = None
+        self._closed = False
 
     # -- lazy replay init ---------------------------------------------------
     def _ensure_replay(self):
@@ -131,13 +161,16 @@ class CaptureHandle:
 
     # -- cleanup ------------------------------------------------------------
     def close(self):
+        if getattr(self, "_closed", False):
+            return
+        self._closed = True
         if self._controller is not None:
             self._controller.Shutdown()
             self._controller = None
         if self._cap is not None:
             self._cap.Shutdown()
             self._cap = None
-        rd.ShutdownReplay()
+        _release_replay_api()
 
     def __enter__(self):
         return self

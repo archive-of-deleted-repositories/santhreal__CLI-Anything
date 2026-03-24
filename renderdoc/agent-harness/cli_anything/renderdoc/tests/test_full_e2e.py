@@ -17,6 +17,7 @@ import os
 import subprocess
 import sys
 import tempfile
+from pathlib import Path
 
 import pytest
 
@@ -24,9 +25,7 @@ import pytest
 # Configuration
 # ---------------------------------------------------------------------------
 
-HARNESS_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-if HARNESS_ROOT not in sys.path:
-    sys.path.insert(0, HARNESS_ROOT)
+HARNESS_ROOT = str(Path(__file__).resolve().parents[3])
 
 TEST_CAPTURE = os.environ.get("RENDERDOC_TEST_CAPTURE", "")
 HAS_CAPTURE = os.path.isfile(TEST_CAPTURE) if TEST_CAPTURE else False
