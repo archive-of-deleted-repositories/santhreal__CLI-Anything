@@ -326,6 +326,8 @@
       "category": "3d",
       "contributor": "AlexGabbia",
       "contributor_url": "https://github.com/AlexGabbia"
+    },
+    {
       "name": "iterm2",
       "display_name": "iTerm2",
       "version": "1.0.0",
