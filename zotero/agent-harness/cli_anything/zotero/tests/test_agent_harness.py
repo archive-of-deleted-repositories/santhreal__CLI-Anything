@@ -48,6 +48,8 @@ class AgentHarnessPackagingTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             content = output_path.read_text(encoding="utf-8")
             self.assertIn("cli-anything-zotero", content)
+            self.assertIn("## Important Constraints", content)
+            self.assertIn("require Zotero's Local API to be enabled", content)
             self.assertIn("## Command Groups", content)
             self.assertIn("### App", content)
             self.assertIn("### Item", content)

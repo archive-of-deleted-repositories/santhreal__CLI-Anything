@@ -22,6 +22,14 @@ cli-anything-zotero
 python -m cli_anything.zotero
 ```
 
+## Important Constraints
+
+- `search items`, `item export`, `item citation`, and `item bibliography` require Zotero's Local API to be enabled.
+- `note add` depends on the live Zotero GUI context and expects the same library to be selected in the app.
+- Import-time PDF attachment support is limited to items created in the same connector session; arbitrary existing-item attachment upload is still out of scope.
+- Experimental SQLite write commands are local-only, user-library-only, and should be treated as non-stable power-user operations.
+- If a bare key is duplicated across libraries, set `session use-library <id>` before follow-up commands.
+
 ## Command Groups
 
 ### App

@@ -22,6 +22,14 @@ cli-anything-{{ software_name }}
 python -m cli_anything.{{ software_name }}
 ```
 
+{% if important_constraints %}
+## Important Constraints
+
+{% for constraint in important_constraints %}
+- {{ constraint }}
+{% endfor %}
+
+{% endif %}
 ## Command Groups
 
 {% for group in command_groups %}

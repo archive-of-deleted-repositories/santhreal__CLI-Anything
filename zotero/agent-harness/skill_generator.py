@@ -43,6 +43,7 @@ class SkillMetadata:
     software_name: str
     skill_intro: str
     version: str
+    important_constraints: list[str] = field(default_factory=list)
     command_groups: list[CommandGroup] = field(default_factory=list)
     examples: list[Example] = field(default_factory=list)
 
@@ -156,6 +157,18 @@ def generate_examples(software_name: str) -> list[Example]:
     ]
 
 
+def generate_important_constraints(software_name: str) -> list[str]:
+    if software_name != "zotero":
+        return []
+    return [
+        "`search items`, `item export`, `item citation`, and `item bibliography` require Zotero's Local API to be enabled.",
+        "`note add` depends on the live Zotero GUI context and expects the same library to be selected in the app.",
+        "Import-time PDF attachment support is limited to items created in the same connector session; arbitrary existing-item attachment upload is still out of scope.",
+        "Experimental SQLite write commands are local-only, user-library-only, and should be treated as non-stable power-user operations.",
+        "If a bare key is duplicated across libraries, set `session use-library <id>` before follow-up commands.",
+    ]
+
+
 def extract_cli_metadata(harness_path: str) -> SkillMetadata:
     harness_root = Path(harness_path)
     cli_root = harness_root / "cli_anything"
@@ -170,6 +183,7 @@ def extract_cli_metadata(harness_path: str) -> SkillMetadata:
         software_name=software_name,
         skill_intro=intro,
         version=version,
+        important_constraints=generate_important_constraints(software_name),
         command_groups=groups,
         examples=generate_examples(software_name),
     )
@@ -201,9 +215,13 @@ def generate_skill_md_simple(metadata: SkillMetadata) -> str:
         f"python -m cli_anything.{metadata.software_name}",
         "```",
         "",
-        "## Command Groups",
-        "",
     ]
+    if metadata.important_constraints:
+        lines.extend(["## Important Constraints", ""])
+        for constraint in metadata.important_constraints:
+            lines.append(f"- {constraint}")
+        lines.append("")
+    lines.extend(["## Command Groups", ""])
     for group in metadata.command_groups:
         lines.extend([f"### {group.name}", "", group.description, "", "| Command | Description |", "|---------|-------------|"])
         for cmd in group.commands:
@@ -240,6 +258,7 @@ def generate_skill_md(metadata: SkillMetadata, template_path: Optional[str] = No
         software_name=metadata.software_name,
         skill_intro=metadata.skill_intro,
         version=metadata.version,
+        important_constraints=metadata.important_constraints,
         command_groups=[
             {"name": group.name, "description": group.description, "commands": [{"name": c.name, "description": c.description} for c in group.commands]}
             for group in metadata.command_groups
