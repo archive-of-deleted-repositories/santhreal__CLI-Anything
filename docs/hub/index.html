@@ -680,33 +680,48 @@
       margin-top: 0.5rem;
     }
 
-    .footer-stat {
-      display: flex;
+    .footer-analytics-link {
+      display: inline-flex;
       align-items: center;
       gap: 0.4rem;
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: var(--text-tertiary);
+      text-decoration: none;
+      padding: 0.35rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      transition: border-color 0.15s, color 0.15s;
     }
 
-    .footer-stat svg { width: 13px; height: 13px; opacity: 0.6; }
-
-    .footer-stat .stat-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 500;
+    .footer-analytics-link:hover {
+      border-color: var(--text-tertiary);
       color: var(--text-secondary);
-      font-size: 0.73rem;
     }
 
-    .footer-stat .stat-dot {
+    .footer-analytics-link svg { opacity: 0.6; flex-shrink: 0; }
+
+    .analytics-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.7rem;
+      color: var(--text-tertiary);
+      margin-left: 0.15rem;
+    }
+
+    .analytics-sep { opacity: 0.4; }
+
+    .stat-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       flex-shrink: 0;
+      display: inline-block;
     }
 
-    .footer-stat .dot-human { background: var(--green); }
-    .footer-stat .dot-agent { background: var(--accent); }
-    .footer-stat .dot-total { background: var(--text-tertiary); }
+    .dot-total { background: var(--text-tertiary); }
+    .dot-human { background: var(--green); }
+    .dot-agent { background: var(--accent); }
 
     /* ── Responsive ── */
     @media (max-width: 640px) {
@@ -831,21 +846,17 @@
       Powered by <a href="https://github.com/HKUDS/CLI-Anything" target="_blank">CLI-Anything</a>
     </div>
     <div class="footer-stats">
-      <div class="footer-stat">
+      <a class="footer-analytics-link" href="https://cloud.umami.is/share/mnilRgKH0oo7SJTs" target="_blank">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
         <span class="stat-dot dot-total"></span>
-        <span>Visits</span>
-        <span class="stat-value" id="stat-total">&mdash;</span>
-      </div>
-      <div class="footer-stat">
+        <span id="stat-total">&mdash;</span> visits
+        <span class="analytics-sep">&middot;</span>
         <span class="stat-dot dot-human"></span>
-        <span>Human</span>
-        <span class="stat-value" id="stat-human">&mdash;</span>
-      </div>
-      <div class="footer-stat">
+        <span id="stat-human">&mdash;</span> human
+        <span class="analytics-sep">&middot;</span>
         <span class="stat-dot dot-agent"></span>
-        <span>AI Agent</span>
-        <span class="stat-value" id="stat-agent">&mdash;</span>
-      </div>
+        <span id="stat-agent">&mdash;</span> AI agent
+      </a>
     </div>
   </footer>
 
@@ -1103,29 +1114,32 @@
         document.addEventListener(evt, onHumanInteraction, { once: false, passive: true });
       });
 
-      // ── Fetch stats from Umami public API to display in footer ──
-      // Replace UMAMI_SHARE_ID with your Umami share URL ID
-      const UMAMI_SHARE_ID = 'mnilRgKH0oo7SJTs';
-      const UMAMI_BASE = 'https://cloud.umami.is/api/share/' + UMAMI_SHARE_ID;
+      // ── Fetch all-time stats from Umami Cloud API ──
+      const UMAMI_API = 'https://api.umami.is/v1';
+      const UMAMI_KEY = 'api_idAebMhzn6z0hsUQT7BSxRuCK2GUZvRY';
+      const WEBSITE_ID = '07082d05-efd3-4f85-a7a1-b426b0e8bfaa';
+      const headers = { 'Accept': 'application/json', 'x-umami-api-key': UMAMI_KEY };
 
       async function loadVisitorStats() {
-        if (UMAMI_SHARE_ID === 'mnilRgKH0oo7SJTs') return; // not configured yet
         try {
           const now = Date.now();
-          const start = now - 30 * 24 * 60 * 60 * 1000; // last 30 days
-          const statsResp = await fetch(`${UMAMI_BASE}/stats?startAt=${start}&endAt=${now}`);
+          // All-time: startAt=0
+          const [statsResp, eventsResp] = await Promise.all([
+            fetch(`${UMAMI_API}/websites/${WEBSITE_ID}/stats?startAt=0&endAt=${now}`, { headers }),
+            fetch(`${UMAMI_API}/websites/${WEBSITE_ID}/events/series?startAt=0&endAt=${now}&unit=year&timezone=UTC`, { headers })
+          ]);
+
           if (statsResp.ok) {
             const stats = await statsResp.json();
-            document.getElementById('stat-total').textContent = (stats.pageviews?.value ?? 0).toLocaleString();
+            document.getElementById('stat-total').textContent = (stats.visits ?? 0).toLocaleString();
           }
 
-          const eventsResp = await fetch(`${UMAMI_BASE}/events?startAt=${start}&endAt=${now}`);
           if (eventsResp.ok) {
             const events = await eventsResp.json();
             let humanCount = 0, agentCount = 0;
             events.forEach(e => {
-              if (e.eventName === 'visit-human') humanCount += e.count || 1;
-              if (e.eventName === 'visit-agent') agentCount += e.count || 1;
+              if (e.x === 'visit-human') humanCount += e.y || 0;
+              if (e.x === 'visit-agent') agentCount += e.y || 0;
             });
             document.getElementById('stat-human').textContent = humanCount.toLocaleString();
             document.getElementById('stat-agent').textContent = agentCount.toLocaleString();
