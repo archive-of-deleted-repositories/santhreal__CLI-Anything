@@ -63,7 +63,7 @@ class StubsManager:
     ) -> dict:
         """Helper: create a simple stub quickly."""
         response = {"status": status}
-        if body:
+        if body is not None:
             response["body"] = body
             response["headers"] = {"Content-Type": content_type}
         mapping = {

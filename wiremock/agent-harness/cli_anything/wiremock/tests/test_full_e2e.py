@@ -7,6 +7,7 @@ Tests for --help and argument parsing work without a server.
 """
 import json
 import os
+import shutil
 import subprocess
 import sys
 import unittest
@@ -25,9 +26,9 @@ def _resolve_cli(name: str) -> list:
     """
     if os.environ.get(CLI_ENV_KEY):
         return [name]
-    result = subprocess.run(["which", name], capture_output=True, text=True)
-    if result.returncode == 0:
-        return [result.stdout.strip()]
+    found = shutil.which(name)
+    if found:
+        return [found]
     # Fall back to running the module directly
     return [sys.executable, "-m", "cli_anything.wiremock.wiremock_cli"]
 
@@ -243,8 +244,8 @@ class TestLiveServer(unittest.TestCase):
                       "--body", '{"hello":"world"}')
         self.assertEqual(result.returncode, 0)
         created = json.loads(result.stdout)
-        self.assertEqual(created["status"], "ok")
-        stub_id = created["data"]["id"]
+        self.assertIn("id", created)
+        stub_id = created["id"]
         self.assertIsNotNone(stub_id)
 
         # List and find it
@@ -264,13 +265,13 @@ class TestLiveServer(unittest.TestCase):
         result = _run("--json", "stub", "create", json.dumps(mapping))
         self.assertEqual(result.returncode, 0)
         data = json.loads(result.stdout)
-        self.assertEqual(data["status"], "ok")
+        self.assertIn("id", data)
 
     @skip_no_server
     def test_stub_get(self):
         # Create a stub first
         r = _run("--json", "stub", "quick", "GET", "/get-test", "200")
-        stub_id = json.loads(r.stdout)["data"]["id"]
+        stub_id = json.loads(r.stdout)["id"]
 
         result = _run("--json", "stub", "get", stub_id)
         self.assertEqual(result.returncode, 0)
@@ -281,7 +282,7 @@ class TestLiveServer(unittest.TestCase):
     def test_stub_delete(self):
         # Create then delete
         r = _run("--json", "stub", "quick", "GET", "/delete-me", "200")
-        stub_id = json.loads(r.stdout)["data"]["id"]
+        stub_id = json.loads(r.stdout)["id"]
 
         result = _run("--json", "stub", "delete", stub_id)
         self.assertEqual(result.returncode, 0)

@@ -50,15 +50,15 @@ from cli_anything.wiremock.core.stubs import StubsManager
 def cli(ctx, host, port, scheme, user, password, json_mode):
     """WireMock CLI — manage stubs, requests, scenarios, and recordings."""
     session = Session.from_env()
-    if host:
+    if host is not None:
         session.host = host
-    if port:
+    if port is not None:
         session.port = port
-    if scheme:
+    if scheme is not None:
         session.scheme = scheme
-    if user:
+    if user is not None:
         session.username = user
-    if password:
+    if password is not None:
         session.password = password
     client = WireMockClient(
         host=session.host,
