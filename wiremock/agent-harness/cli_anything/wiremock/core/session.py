@@ -14,9 +14,13 @@ class Session:
 
     @classmethod
     def from_env(cls) -> "Session":
+        try:
+            port = int(os.environ.get("WIREMOCK_PORT", "8080"))
+        except ValueError:
+            port = 8080
         return cls(
             host=os.environ.get("WIREMOCK_HOST", "localhost"),
-            port=int(os.environ.get("WIREMOCK_PORT", "8080")),
+            port=port,
             scheme=os.environ.get("WIREMOCK_SCHEME", "http"),
             username=os.environ.get("WIREMOCK_USER"),
             password=os.environ.get("WIREMOCK_PASSWORD"),
