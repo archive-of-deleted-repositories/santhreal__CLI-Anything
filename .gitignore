@@ -23,6 +23,25 @@
 !/.github/scripts/
 !/.github/PULL_REQUEST_TEMPLATE.md
 
+# Allow examples directory
+!/examples/
+# Ignore everything inside examples first
+/examples/*
+# Then allow only the subdirs and files we need
+!/examples/README.md
+!/examples/drawio/
+!/examples/slay_the_spire_ii/
+!/examples/videocaptioner/
+# Inside each subdir, ignore everything then allow specific files
+/examples/drawio/*
+!/examples/drawio/drawio_demo.gif
+!/examples/drawio/https_handshake.png
+/examples/slay_the_spire_ii/*
+!/examples/slay_the_spire_ii/example_preview.gif
+/examples/videocaptioner/*
+!/examples/videocaptioner/videocaptioner_before.png
+!/examples/videocaptioner/videocaptioner_after.png
+
 # Step 3: Allow cli-anything-plugin, codex-skill, and skill_generation tests
 !/cli-anything-plugin/
 !/codex-skill/
@@ -39,6 +58,7 @@
 !/inkscape/
 !/audacity/
 !/libreoffice/
+!/zotero/
 !/mubu/
 !/obs-studio/
 !/kdenlive/
@@ -56,7 +76,12 @@
 !/browser/
 !/musescore/
 !/krita/
+!/freecad/
 !/iterm2/
+!/slay_the_spire_ii/
+!/rms/
+!/renderdoc/
+!/cloudcompare/
 
 # Step 5: Inside each software dir, ignore everything (including dotfiles)
 /gimp/*
@@ -69,6 +94,8 @@
 /audacity/.*
 /libreoffice/*
 /libreoffice/.*
+/zotero/*
+/zotero/.*
 /mubu/*
 /mubu/.*
 /obs-studio/*
@@ -101,8 +128,20 @@
 /musescore/.*
 /krita/*
 /krita/.*
+/freecad/*
+/freecad/.*
 /iterm2/*
 /iterm2/.*
+/slay_the_spire_ii/*
+/slay_the_spire_ii/.*
+/rms/*
+/rms/.*
+/renderdoc/*
+/renderdoc/.*
+/cloudcompare/*
+/cloudcompare/.*
+/wiremock/*
+/wiremock/.*
 
 # Step 6: ...except agent-harness/
 !/gimp/agent-harness/
@@ -110,6 +149,7 @@
 !/inkscape/agent-harness/
 !/audacity/agent-harness/
 !/libreoffice/agent-harness/
+!/zotero/agent-harness/
 !/mubu/agent-harness/
 !/obs-studio/agent-harness/
 !/kdenlive/agent-harness/
@@ -127,7 +167,15 @@
 !/browser/agent-harness/
 !/musescore/agent-harness/
 !/krita/agent-harness/
+!/freecad/agent-harness/
 !/iterm2/agent-harness/
+!/slay_the_spire_ii/agent-harness/
+!/slay_the_spire_ii/README.md
+!/rms/agent-harness/
+!/renderdoc/agent-harness/
+!/cloudcompare/agent-harness/
+!/wiremock/
+!/wiremock/agent-harness/
 
 # Step 7: Ignore build artifacts within allowed dirs
 **/__pycache__/
@@ -137,12 +185,10 @@
 **/build/
 **/.pytest_cache/
 **/*.egg
-**/*.mp4
 **/*.wav
 **/*.blend
 **/*.xcf
 **/*.mlt
-**/*.drawio
 
 # Step 8: But allow assets images
 !/assets/*.png
@@ -163,3 +209,5 @@ assets/gen_typing_gif.py
 /notebooklm/*
 /notebooklm/.*
 !/notebooklm/agent-harness/
+!/intelwatch/agent-harness/
+!/intelwatch/

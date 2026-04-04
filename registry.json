@@ -2,9 +2,23 @@
   "meta": {
     "repo": "https://github.com/HKUDS/CLI-Anything",
     "description": "CLI-Hub — Agent-native stateful CLI interfaces for softwares, codebases, and Web Services",
-    "updated": "2026-03-18"
+    "updated": "2026-03-31"
   },
   "clis": [
+    {
+      "name": "wiremock",
+      "display_name": "WireMock",
+      "version": "0.1.0",
+      "description": "HTTP mock server management — create stubs, inspect requests, record traffic, and manage scenarios via WireMock REST API",
+      "requires": "WireMock server running (java -jar wiremock-standalone.jar)",
+      "homepage": "https://wiremock.org",
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=wiremock/agent-harness",
+      "entry_point": "cli-anything-wiremock",
+      "skill_md": "wiremock/agent-harness/cli_anything/wiremock/skills/SKILL.md",
+      "category": "testing",
+      "contributor": "fabiomantel",
+      "contributor_url": "https://github.com/fabiomantel"
+    },
     {
       "name": "anygen",
       "display_name": "AnyGen",
@@ -52,7 +66,7 @@
       "display_name": "Blender",
       "version": "1.0.0",
       "description": "3D modeling, animation, and rendering via blender --background --python",
-      "requires": "blender",
+      "requires": "blender >= 4.2",
       "homepage": "https://www.blender.org",
       "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=blender/agent-harness",
       "entry_point": "cli-anything-blender",
@@ -172,6 +186,20 @@
       "category": "office",
       "contributor": "CLI-Anything-Team",
       "contributor_url": "https://github.com/HKUDS/CLI-Anything"
+    },
+    {
+      "name": "zotero",
+      "display_name": "Zotero",
+      "version": "0.1.0",
+      "description": "Reference management via local Zotero SQLite, connector, and Local API",
+      "requires": "Zotero desktop app",
+      "homepage": "https://www.zotero.org",
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=zotero/agent-harness",
+      "entry_point": "cli-anything-zotero",
+      "skill_md": "zotero/agent-harness/cli_anything/zotero/skills/SKILL.md",
+      "category": "office",
+      "contributor": "zhiwuyazhe_fjr",
+      "contributor_url": "https://github.com/zhiwuyazhe_fjr"
     },
     {
       "name": "mubu",
@@ -312,6 +340,20 @@
       "category": "design",
       "contributor": "zhangxilong-43",
       "contributor_url": "https://github.com/zhangxilong-43"
+    },
+    {
+      "name": "freecad",
+      "display_name": "FreeCAD",
+      "version": "1.1.0",
+      "description": "Parametric 3D CAD modeling via FreeCAD CLI (258 commands: Part, Sketcher, PartDesign, Assembly, Mesh, TechDraw, Draft, FEM, CAM, and more)",
+      "requires": "FreeCAD >= 1.1 (freecad.org)",
+      "homepage": "https://www.freecad.org",
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=freecad/agent-harness",
+      "entry_point": "cli-anything-freecad",
+      "skill_md": "freecad/agent-harness/cli_anything/freecad/skills/SKILL.md",
+      "category": "3d",
+      "contributor": "AlexGabbia",
+      "contributor_url": "https://github.com/AlexGabbia"
     },
     {
       "name": "iterm2",
