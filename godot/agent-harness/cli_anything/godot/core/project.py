@@ -1,7 +1,5 @@
 """Godot project management — create, info, list scenes, validate."""
 
-import configparser
-import os
 from pathlib import Path
 
 from cli_anything.godot.utils.godot_backend import (

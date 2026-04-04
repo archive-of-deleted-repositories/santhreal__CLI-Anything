@@ -80,7 +80,7 @@ def list_export_presets(project_path: str) -> dict:
 
     for line in text.splitlines():
         line = line.strip()
-        if line.startswith("[preset.") and line.endswith("]"):
+        if line.startswith("[preset.") and line.endswith("]") and ".options]" not in line:
             if current:
                 presets.append(current)
             current = {}

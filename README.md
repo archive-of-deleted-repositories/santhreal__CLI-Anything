@@ -451,6 +451,7 @@ The catalog auto-updates whenever `registry.json` changes — new community CLIs
 | **📊 Data & Analytics** | Enable programmatic data processing, visualization, and statistical analysis workflows | JupyterLab, Apache Superset, Metabase, Redash, DBeaver, KNIME, Orange, OpenSearch Dashboards, Lightdash |
 | **💻 Development Tools** | Streamline code editing, building, testing, and deployment processes via command interfaces | Jenkins, Gitea, Hoppscotch, Portainer, pgAdmin, SonarQube, ArgoCD, OpenLens, Insomnia, Beekeeper Studio, **[iTerm2](https://iterm2.com)** |
 | **🎨 Creative & Media** | Control content creation, editing, and rendering workflows programmatically | Blender, GIMP, OBS Studio, Audacity, Krita, Kdenlive, Shotcut, Inkscape, Darktable, LMMS, Ardour |
+| **🎮 Game Development** | Manage game projects, scenes, exports, and scripting through headless engine interfaces | **[Godot Engine](https://godotengine.org)** |
 | **🔬 Scientific Computing** | Automate research workflows, simulations, and complex calculations | ImageJ, FreeCAD, QGIS, ParaView, Gephi, LibreCAD, Stellarium, KiCad, JASP, Jamovi |
 | **🏢 Enterprise & Office** | Convert business applications and productivity tools into agent-accessible systems | NextCloud, GitLab, Grafana, Mattermost, LibreOffice, AppFlowy, NocoDB, Odoo (Community), Plane, ERPNext |
 | **📞 Communication & Collaboration** | Automate meeting scheduling, participant management, recording retrieval, and reporting through structured CLI | Zoom, Jitsi Meet, BigBlueButton, Mattermost |
@@ -731,12 +732,19 @@ Each application received complete, production-ready CLI interfaces — not demo
 <td align="center">✅ 19</td>
 </tr>
 <tr>
+<td align="center"><strong>🎮 Godot Engine</strong></td>
+<td>Game Development</td>
+<td><code>cli-anything-godot</code></td>
+<td>Godot 4.x headless subprocess</td>
+<td align="center">✅ 24</td>
+</tr>
+<tr>
 <td align="center" colspan="4"><strong>Total</strong></td>
-<td align="center"><strong>✅ 1,858</strong></td>
+<td align="center"><strong>✅ 1,882</strong></td>
 </tr>
 </table>
 
-> **100% pass rate** across all 1,858 tests — 1,355 unit tests + 484 end-to-end tests + 19 Node.js tests.
+> **100% pass rate** across all 1,882 tests — 1,379 unit tests + 484 end-to-end tests + 19 Node.js tests.
 
 ---
 
@@ -840,6 +848,7 @@ cli-anything/
 ├── 🧠 notebooklm/agent-harness/         # NotebookLM CLI (experimental, 21 tests)
 ├── 🛡️ adguardhome/agent-harness/       # AdGuard Home CLI (36 tests)
 ├── 🦙 ollama/agent-harness/             # Ollama CLI (98 tests)
+├── 🎮 godot/agent-harness/              # Godot Engine CLI (24 tests)
 └── 🎨 sketch/agent-harness/             # Sketch CLI (19 tests, Node.js)
 ```
 
