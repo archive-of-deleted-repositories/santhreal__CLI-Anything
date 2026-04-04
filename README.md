@@ -480,6 +480,7 @@ The catalog auto-updates whenever `registry.json` changes — new community CLIs
 | **🧪 Testing & Mocking** | Control HTTP mock servers, manage test stubs, record and replay API traffic for integration testing | **[WireMock](https://wiremock.org)** |
 | **🔬 Graphics & GPU Debugging** | Analyze GPU frame captures, inspect pipeline state, export shaders, and diff rendering state | RenderDoc |
 | **🎬 Video & Subtitles** | Transcribe speech, translate subtitles, burn styled captions into video — full captioning pipeline | VideoCaptioner |
+| **🔍 AI-Native Search** | Neural and deep web search with structured content retrieval through embedding-based APIs | [Exa](https://exa.ai) |
 | **✨ AI Content Generation** | Generate professional deliverables (slides, docs, diagrams, websites, research reports) through AI-powered cloud APIs | [AnyGen](https://www.anygen.io), Gamma, Beautiful.ai, Tome |
 
 ---
@@ -834,12 +835,19 @@ Each application received complete, production-ready CLI interfaces — not demo
 <td align="center">✅ 88</td>
 </tr>
 <tr>
+<td align="center"><strong>🔍 <a href="exa/agent-harness/">Exa</a></strong></td>
+<td>AI-Native Web Search</td>
+<td><code>cli-anything-exa</code></td>
+<td>exa-py SDK</td>
+<td align="center">✅ 40</td>
+</tr>
+<tr>
 <td align="center" colspan="4"><strong>Total</strong></td>
-<td align="center"><strong>✅ 2,005</strong></td>
+<td align="center"><strong>✅ 2,045</strong></td>
 </tr>
 </table>
 
-> **100% pass rate** across all 2,005 tests — 1,453 unit tests + 533 end-to-end tests + 19 Node.js tests.
+> **100% pass rate** across all 2,045 tests — 1,493 unit tests + 533 end-to-end tests + 19 Node.js tests.
 
 ---
 
@@ -948,8 +956,9 @@ cli-anything/
 ├── 🦙 ollama/agent-harness/             # Ollama CLI (98 tests)
 ├── 🎨 sketch/agent-harness/             # Sketch CLI (19 tests, Node.js)
 ├── 🔬 renderdoc/agent-harness/          # RenderDoc CLI (59 tests)
-└── 🎬 videocaptioner/agent-harness/     # VideoCaptioner CLI (26 tests)
-└── ☁️ cloudcompare/agent-harness/       # CloudCompare CLI (88 tests)
+├── 🎬 videocaptioner/agent-harness/     # VideoCaptioner CLI (26 tests)
+├── ☁️ cloudcompare/agent-harness/       # CloudCompare CLI (88 tests)
+└── 🔍 exa/agent-harness/               # Exa CLI (40 tests)
 ```
 
 Each `agent-harness/` contains an installable Python package under `cli_anything.<software>/` with Click CLI, core modules, utils (including `repl_skin.py` and backend wrapper), and comprehensive tests.

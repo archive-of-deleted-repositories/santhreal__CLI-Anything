@@ -173,7 +173,7 @@ _CATEGORY_CHOICES = click.Choice(
 @cli.command("search")
 @click.argument("query")
 @click.option("--type", "search_type", default="auto", show_default=True,
-              type=_SEARCH_TYPES, help="Search mode.")
+              type=_SEARCH_TYPES, help="Search mode. 'auto' uses neural search (embedding-based).")
 @click.option("--num-results", "-n", default=10, show_default=True,
               type=click.IntRange(1, 100), help="Number of results (1–100).")
 @click.option("--category", type=_CATEGORY_CHOICES, default=None,

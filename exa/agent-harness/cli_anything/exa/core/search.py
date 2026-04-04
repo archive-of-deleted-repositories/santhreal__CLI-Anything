@@ -68,6 +68,8 @@ def get_contents(
     """Fetch full page contents for one or more URLs."""
     client = get_client()
 
+    # NOTE: exa-py's get_contents() accepts content keys (text, highlights, ...)
+    # as top-level kwargs, unlike search() which wraps them in a `contents=` param.
     kwargs = build_contents_param(content_mode, freshness) or {}
 
     response = client.get_contents(urls, **kwargs)

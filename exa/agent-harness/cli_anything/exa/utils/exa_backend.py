@@ -40,11 +40,14 @@ def check_connectivity() -> dict[str, Any]:
     """Verify the API key is valid by running a minimal search.
 
     Returns a dict with keys: ok (bool), message (str).
+
+    Note: This performs a real search call (1 result) which consumes a small
+    amount of API credit. There is no free health-check endpoint in the Exa API.
     """
     try:
         client = get_client()
         client.search("test", num_results=1)
-        return {"ok": True, "message": "API key valid — Exa reachable"}
+        return {"ok": True, "message": "API key valid — Exa reachable (note: uses 1 search credit)"}
     except RuntimeError as exc:
         return {"ok": False, "message": str(exc)}
     except Exception as exc:  # noqa: BLE001
@@ -65,7 +68,7 @@ def build_contents_param(
         A contents dict suitable for passing to exa.search() / exa.get_contents(),
         or None if content_mode is "none".
     """
-    if content_mode == "none":  # noqa: SIM114
+    if content_mode == "none":
         return None
 
     contents: dict[str, Any] = {}
