@@ -371,7 +371,7 @@
     },
     {
       "name": "slay_the_spire_ii",
-      "display_name": "Slay the Spire II",
+      "display_name": "Slay the Spire 2",
       "version": "1.0.0",
       "description": "Control the real Slay the Spire 2 game via local STS2_Bridge HTTP API",
       "requires": "Slay the Spire 2 (Steam) with STS2_Bridge mod enabled",
@@ -480,6 +480,20 @@
       "category": "search",
       "contributor": "tgonzalezc5",
       "contributor_url": "https://github.com/tgonzalezc5"
+    },
+    {
+      "name": "godot",
+      "display_name": "Godot Engine",
+      "version": "1.0.0",
+      "description": "Game engine project management, scene editing, export and GDScript execution via Godot 4 headless mode",
+      "requires": "Godot 4.x (godotengine.org)",
+      "homepage": "https://godotengine.org",
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=godot/agent-harness",
+      "entry_point": "cli-anything-godot",
+      "skill_md": "godot/agent-harness/cli_anything/godot/skills/SKILL.md",
+      "category": "gamedev",
+      "contributor": "omerarslan0",
+      "contributor_url": "https://github.com/omerarslan0"
     }
   ]
 }
