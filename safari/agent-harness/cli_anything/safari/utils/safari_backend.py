@@ -1,21 +1,11 @@
 """Safari MCP client wrapper — communicates with safari-mcp server via stdio.
 
-Safari MCP is a native macOS browser automation tool with a dual engine:
-1. Safari Web Extension (fast, ~5-20ms) — when extension is connected
-2. AppleScript + Swift daemon (~5ms, always available) — fallback
+Provides a synchronous Python interface to safari-mcp's MCP server.
+Every call spawns a fresh ``npx safari-mcp`` subprocess, performs one
+tool call, and exits. This keeps the wrapper simple and avoids async
+event-loop lifecycle issues.
 
-This module provides a synchronous Python interface to safari-mcp's MCP
-server. Every call spawns a fresh `npx safari-mcp` subprocess, performs
-one tool call, and exits. That adds ~200-500ms per call but keeps the
-wrapper small and avoids async event-loop lifecycle bugs.
-
-Installation:
-1. Install Node.js 18+ (for npx)
-2. Safari will be controlled automatically — no extension required
-3. Optional: Install the Safari MCP extension from https://safari-mcp.com
-
-Safari MCP GitHub: https://github.com/achiya-automation/safari-mcp
-npm: https://www.npmjs.com/package/safari-mcp
+Requires Node.js 18+ (for npx) and macOS.
 """
 
 import asyncio
@@ -123,6 +113,12 @@ def call(tool_name: str, **arguments) -> Any:
     This is the primary entry point for the CLI. All 84 Safari MCP tools
     are reachable via this single function; the Click layer generates
     ergonomic commands but ultimately funnels here.
+
+    Note:
+        Uses ``asyncio.run()`` internally. This will raise
+        ``RuntimeError`` if called from an already-running event loop
+        (e.g. inside Jupyter or an async framework). Callers in async
+        contexts should use ``_call_tool()`` directly with ``await``.
 
     Args:
         tool_name: Full MCP tool name, e.g. "safari_navigate"

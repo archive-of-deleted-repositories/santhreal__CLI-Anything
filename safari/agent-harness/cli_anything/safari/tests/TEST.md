@@ -400,7 +400,7 @@ $ cli-anything-safari --json tool screenshot
 ### Coverage Notes
 
 - **Fully covered:** schema parsing (via parity tests), URL validation,
-  DOM sanitization, session state, CLI wiring, introspection
+  session state, CLI wiring, introspection
 - **Covered via regression locks:** four specific nested-schema parser
   bugs that earlier revisions got wrong (`mock_route.response`,
   `run_script.steps`, `fill_form.fields`, `fill_and_submit.fields`)

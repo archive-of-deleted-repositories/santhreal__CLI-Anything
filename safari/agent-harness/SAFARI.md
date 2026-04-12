@@ -1,5 +1,8 @@
 # SAFARI.md — Software-Specific Analysis
 
+> **Disclosure:** This harness was contributed by the maintainer of
+> `safari-mcp`.
+
 Software: **[safari-mcp](https://github.com/achiya-automation/safari-mcp)** (npm: `safari-mcp`)
 
 Target: **Safari on macOS** via safari-mcp's Node.js MCP server.
@@ -14,19 +17,16 @@ rendering-gap assessment required by the CLI-Anything methodology
 
 ### Backend engine
 
-Safari MCP is a Node.js MCP server that wraps Safari on macOS. It has a
-**dual engine**:
+Safari MCP is a Node.js MCP server that wraps Safari on macOS. It has
+two execution engines:
 
-1. **Safari Web Extension** — fast path (~5-20ms), HTTP polling transport,
-   loaded when the user installs the Safari MCP extension from
-   [safari-mcp.com](https://safari-mcp.com).
-2. **AppleScript + Swift daemon** — default path (~5ms), always available,
-   no extension required. This is what 99% of users hit.
+1. **Safari Web Extension** — HTTP polling transport, loaded when the
+   extension is installed.
+2. **AppleScript + Swift daemon** — always available, no extension
+   required. Default path for most users.
 
-Both engines keep Safari logins (unlike headless Chrome), work on Apple
-Silicon, and have **zero Chrome overhead**. The server uses
-`extensionOrFallback()` internally to pick the fastest available engine
-per call — the CLI does not need to expose engine selection.
+The server uses `extensionOrFallback()` internally to select the
+engine per call — the CLI does not need to expose engine selection.
 
 ### Multi-instance behavior (proxy mode)
 

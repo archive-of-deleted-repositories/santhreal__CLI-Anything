@@ -47,6 +47,7 @@ _ACCENT_COLORS = {
     "obs_studio":  "\033[38;5;55m",    # purple
     "kdenlive":    "\033[38;5;69m",    # slate blue
     "shotcut":     "\033[38;5;35m",    # teal green
+    "safari":      "\033[38;5;33m",    # Safari blue
 }
 _DEFAULT_ACCENT = "\033[38;5;75m"      # default sky blue
 

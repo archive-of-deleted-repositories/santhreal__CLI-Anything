@@ -147,6 +147,9 @@ def handle_error(func):
     inline because they need per-parameter JSON-decode handling that a
     generic decorator cannot express.
     """
+    import functools
+
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -154,8 +157,6 @@ def handle_error(func):
                 OSError, json.JSONDecodeError,
                 click.exceptions.ClickException) as e:
             _handle_error(e)
-    wrapper.__name__ = func.__name__
-    wrapper.__doc__ = func.__doc__
     return wrapper
 
 
@@ -174,6 +175,7 @@ def _validate_url_or_exit(url: str) -> None:
     if _repl_mode:
         raise click.exceptions.UsageError(err)
     _handle_error(click.exceptions.UsageError(err))
+    return
 
 
 # Subcommands that operate on bundled metadata and never touch safari-mcp.

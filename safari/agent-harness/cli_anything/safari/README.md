@@ -3,32 +3,13 @@
 A command-line interface for Safari browser automation on macOS via
 [`safari-mcp`](https://github.com/achiya-automation/safari-mcp).
 
-Safari MCP uses a native dual engine (Safari Web Extension + AppleScript),
-keeps Safari logins, and works on Apple Silicon — no Chrome, no headless.
+Every one of the 84 MCP tools is auto-generated as a Click command
+from the bundled tool schema.
 
-**Guaranteed feature parity** with safari-mcp: every one of the 84 MCP
-tools is auto-generated as a Click command from the bundled tool schema.
-
-> ### ⚠️ Prefer `safari-mcp` directly if your agent supports MCP
->
-> Measured live against real Safari: **MCP is ~25× faster per call**
-> (119ms vs 3,023ms median; 2,714ms vs 15,153ms for a 5-op workflow).
-> If you're on **Claude Code, Cursor, Cline, Windsurf, or any other
-> MCP-compatible client**, install `safari-mcp` directly:
->
-> ```bash
-> npm install -g safari-mcp
-> ```
->
-> This CLI wrapper exists for a different audience:
-> - Agent frameworks that **don't** speak MCP (Codex CLI, GitHub Copilot CLI)
-> - **Bash scripts** and `jq` pipelines
-> - **CI/CD** and cron jobs
-> - **Long-running Opus agents** where tool-definition tokens (~8K per
->   API call with MCP) add up to real money at scale
->
-> See [`HARNESS.md`](../../HARNESS.md) → "Performance tradeoffs" for the
-> full benchmark.
+> **Note:** Each CLI invocation spawns a fresh subprocess. If your
+> agent supports MCP natively, using `safari-mcp` directly will be
+> faster. This CLI targets non-MCP agent frameworks, bash pipelines,
+> CI/cron, and terminal debugging.
 
 ## Installation
 

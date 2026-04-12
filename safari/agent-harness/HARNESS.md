@@ -1,19 +1,16 @@
 # Safari Harness: safari-mcp MCP Integration
 
+> **Disclosure:** This harness was contributed by the maintainer of
+> `safari-mcp`. It wraps the upstream MCP server as a CLI; no code
+> from safari-mcp is vendored or modified.
+
 ## Purpose
 
-This harness provides **native Safari browser automation on macOS** by
-wrapping [`safari-mcp`](https://github.com/achiya-automation/safari-mcp) —
-a Node.js MCP server — in a Python Click CLI.
+This harness provides Safari browser automation on macOS by wrapping
+[`safari-mcp`](https://github.com/achiya-automation/safari-mcp) — a
+Node.js MCP server — in a Python Click CLI.
 
-Where the sibling `browser/agent-harness/` (DOMShell) covers Chrome via a
-virtual accessibility-tree filesystem, this harness covers Safari via a
-dual engine native to macOS. The two harnesses are complementary:
-
-- **`browser/agent-harness/`** — Chrome on any OS, via DOMShell's MCP server
-- **`safari/agent-harness/`** (this one) — Safari on macOS, via safari-mcp
-
-Both follow the MCP backend pattern documented in
+It follows the MCP backend pattern documented in
 [`cli-anything-plugin/guides/mcp-backend.md`](../cli-anything-plugin/guides/mcp-backend.md).
 
 ## Architecture Overview
@@ -131,7 +128,7 @@ safari/agent-harness/
         │   └── session.py              in-memory state (last URL, tab)
         ├── utils/
         │   ├── safari_backend.py       MCP stdio client (sync wrapper)
-        │   ├── security.py             URL validation + DOM sanitization
+        │   ├── security.py             URL validation
         │   ├── tool_registry.py        loads tools.json, normalizes names
         │   └── repl_skin.py            (copied verbatim from plugin)
         ├── resources/
@@ -140,7 +137,7 @@ safari/agent-harness/
         │   └── SKILL.md                agent-discovery manifest
         └── tests/
             ├── test_core.py            unit tests, no Safari required
-            ├── test_security.py        URL validation + DOM sanitization
+            ├── test_security.py        URL validation
             ├── test_parity.py          CLI ↔ registry parity + regression locks
             └── test_full_e2e.py        CliRunner + subprocess E2E (gated by SAFARI_E2E)
 ```
@@ -223,86 +220,16 @@ wrapper around an async MCP client cannot cleanly hold an `asyncio`
 session across `asyncio.run()` calls without a background event-loop
 thread — a v2 concern, not v1.
 
-## Performance Tradeoffs — CLI vs Direct MCP
+## Performance Characteristics
 
-This harness is **strictly slower than using `safari-mcp` directly over
-stdio MCP** for any workload that reuses a session. Measured live on
-2026-04-10 against real Safari (macOS 14, Apple Silicon, safari-mcp
-2.7.8, mcp-python 1.27.0):
+Each CLI invocation spawns a fresh `npx safari-mcp` subprocess. This
+adds ~2.9s of overhead per call (npx resolution, Node startup, MCP
+handshake). For latency-sensitive workflows, users should drive the
+Python API directly (`from cli_anything.safari.utils.safari_backend
+import call`) or use `safari-mcp` over MCP stdio.
 
-### Per-call latency (10× `safari_list_tabs`, warm cache)
-
-|          | MCP persistent session | CLI subprocess per call | Ratio |
-|----------|-----------------------:|------------------------:|------:|
-| min      |                  113ms |                 2,970ms |  26×  |
-| median   |              **119ms** |             **3,023ms** | **25.3×** |
-| mean     |                  119ms |                 3,023ms |  25×  |
-| max      |                  124ms |                 3,097ms |  25×  |
-
-The CLI pays ~2.9s per call for `npx` resolution, Node.js startup,
-`safari-mcp` init, and MCP handshake. The MCP path amortizes all of
-that over the lifetime of a single persistent session.
-
-### Workflow latency (5 reactive ops: snapshot → read → list → snapshot → read)
-
-|                                  | Wall time  |
-|----------------------------------|-----------:|
-| MCP (persistent session, 5 ops)  | **2.7s**   |
-| CLI (5 sequential spawns)        | 15.3s      |
-| CLI (1 shell pipeline, 5 ops)    | 15.2s      |
-
-Shell pipelining does not help because every `&&` still spawns a fresh
-`cli-anything-safari` subprocess. The only way to avoid this is to drive
-the Python API directly (`from cli_anything.safari.utils.safari_backend
-import call`) or use `safari-mcp` over stdio.
-
-### Token overhead per API call (cl100k_base tokenizer, real tools.json)
-
-|                                   | Tokens per API call |
-|-----------------------------------|--------------------:|
-| MCP (84 tool definitions serialized) | **7,986 tokens**  |
-| CLI (`bash` tool definition)         |     **95 tokens** |
-| CLI one-time discovery (`tools list`) |   5,236 tokens   |
-
-Over a **100-turn agent session** the MCP path sends ~800K tokens of
-tool definitions; the CLI path sends ~20K total. At Claude Opus input
-pricing ($15/MTok without cache writes) that is:
-
-- MCP: ~$12 per 100 turns just for tool-definition overhead
-- CLI: ~$0.22 per 100 turns
-
-**Caveats**:
-- **Prompt caching** narrows the MCP gap considerably (first write at
-  $3.75/MTok, reads at $1.50/MTok); with caching enabled, MCP is
-  approximately 10× more expensive instead of 84×.
-- The CLI does not amortize subprocess startup across calls. Long
-  batches benefit from using the Python API directly; see above.
-
-### Accuracy
-
-Outputs are byte-identical. Both paths ultimately call the same
-`safari-mcp` server; the CLI is a thin subprocess wrapper that passes
-arguments through and unwraps the MCP `CallToolResult` into stdout.
-Verified live in the benchmark: the Unicode titles and URLs returned
-from the CLI match those returned from the direct MCP session
-character-for-character.
-
-### When to use which
-
-- **Interactive / reactive / low-latency agent sessions** → use
-  `safari-mcp` directly over MCP. The 25× latency win matters for UX
-  when each step depends on the previous.
-- **Batch / scripted / bash-pipeline / non-MCP-aware agent / cost-
-  constrained Opus session** → use this CLI. The subprocess overhead is
-  amortized over many ops and the token savings are real.
-- **Interoperability / CI / cron / developers debugging from a
-  terminal** → use this CLI. It was designed for workflows that cannot
-  spin up an MCP client.
-
-This harness's reason for existing is **not** "we can replace MCP." It
-is "we can reach audiences MCP cannot serve" (non-MCP agents, bash,
-cron) and "we can reduce tool-def overhead at scale" (long Opus
-sessions).
+The CLI targets use cases where MCP is not available: non-MCP agent
+frameworks, bash pipelines, CI/cron, and terminal debugging.
 
 ## Testing Strategy
 
@@ -317,12 +244,11 @@ network, no subprocess. Covers:
 
 ### Security Tests (`tests/test_security.py`)
 
-Covers `validate_url` and `sanitize_dom_text` in isolation:
+Covers `validate_url` in isolation:
 - Blocked schemes (`file`, `javascript`, `data`, `about`, `vbscript`,
   `webkit`, `safari`)
 - Malformed inputs (empty, whitespace, None, missing scheme/host)
 - Enum-style scheme helpers
-- DOM sanitization (prompt-injection patterns, control chars, truncation)
 - Private-network env var behavior
 
 ### Parity Tests (`tests/test_parity.py`)
@@ -394,21 +320,6 @@ spawns per call but at least avoids the Python interpreter startup.
 orders of magnitude smaller and carries the ref IDs needed for
 interaction.
 
-## Comparison to browser/agent-harness (DOMShell)
-
-|                           | safari-harness (this)        | browser/agent-harness (DOMShell) |
-|---------------------------|------------------------------|----------------------------------|
-| Browser                   | Safari                       | Chrome / Chromium                |
-| Platform                  | macOS only                   | macOS, Linux, Windows            |
-| Extension required        | No (fallback works)          | Yes (Chrome Web Store)           |
-| Backend language          | Node.js (safari-mcp)         | Node.js (DOMShell)               |
-| CLI generation            | Schema-driven, auto          | Hand-wrapped                     |
-| Tool count                | 84                           | ~10                              |
-| Keeps browser logins      | Yes                          | Yes (with profile)               |
-| State model               | Tab-based                    | Virtual filesystem path          |
-| WAF bypass (isTrusted)    | Yes (`tool native-click`)    | No                               |
-| Daemon mode               | No                           | Yes (with known caveats)         |
-| Parity test               | Yes (`test_parity.py`)       | N/A                              |
 
 ## Future Enhancements
 

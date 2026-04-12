@@ -19,19 +19,11 @@ automatically from `safari-mcp`'s tool schema (bundled as
 `resources/tools.json`). All 84 tools are reachable with the exact
 argument names and types the MCP server expects.
 
-## ⚠️ When to use this CLI (and when NOT to)
+## When to use this CLI
 
-**Prefer `safari-mcp` directly** if your agent speaks MCP (Claude Code,
-Cursor, Cline, Windsurf, Continue, OpenClaw). It is **~25× faster per
-call** (119ms vs 3,023ms median, measured live against real Safari on
-2026-04-10):
-
-```
-Per-call latency (10× list_tabs):
-  MCP (persistent session):     119ms median
-  CLI (subprocess per call):  3,023ms median
-  MCP wins by 25.3×
-```
+Each CLI invocation spawns a fresh subprocess, so there is per-call
+overhead. If your agent speaks MCP natively (Claude Code, Cursor, Cline,
+etc.), using `safari-mcp` directly over MCP stdio will be faster.
 
 **Use this CLI when:**
 - Your agent framework does **not** speak MCP (Codex CLI, GitHub Copilot
@@ -39,19 +31,7 @@ Per-call latency (10× list_tabs):
 - You need to **script browser automation from bash** —
   `cli-anything-safari --json tool snapshot | jq '...'`.
 - You run in **CI/CD** and want cron-able, subprocess-friendly output.
-- You're a **long-running agent with hundreds of turns** and want to
-  avoid paying for 8,000 tokens of MCP tool definitions on every API
-  call (the CLI reduces tool-definition overhead by ~84×; at Opus
-  pricing that's ~$12 saved per 100-turn session).
 - You're **debugging interactively** from Terminal.
-
-For live, reactive agent sessions in Claude Code and similar, use
-`safari-mcp` directly. This CLI is here to bring safari-mcp to the
-agents and workflows that can't use MCP.
-
-Safari MCP has a dual engine:
-1. **Safari Web Extension** (fast, ~5-20ms) — when the extension is connected
-2. **AppleScript + Swift daemon** (~5ms, always available) — fallback
 
 ## Installation
 
