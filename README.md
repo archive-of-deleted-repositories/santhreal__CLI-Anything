@@ -45,6 +45,10 @@ CLI-Anything: Bridging the Gap Between AI Agents and the World's Software</stron
 
 > Thanks to all invaluable efforts from the community! More updates continuously on the way everyday..
 
+- **2026-04-13** 📓 **Obsidian CLI** merged (#211) — knowledge management harness via Local REST API, 48 unit + 7 E2E tests. ⛓️ **Eth2-Quickstart CLI** merged (#195) — Ethereum staking node management harness. 📚 **Zotero CLI** updated to v0.4.1 (#201) — now a standalone PyPI package with 52 MCP tools + 70 CLI commands.
+
+- **2026-04-11** 🔗 **n8n CLI** merged (#188) — workflow automation harness. 🔧 **Exa CLI** fix (#205) — added integration header for usage tracking. CLI-Hub auto-publish CI and PyPI package updates.
+
 - **2026-04-10** 📦 **CLI-Hub package manager** launched — `pip install cli-anything-hub` to browse, install, and manage all CLIs. Download tracking via Umami analytics. Hub frontend updated with new install flow and "Empower yourself" toolkit card.
 
 - **2026-04-09** 🧹 Cleanup and docs pass (#200) — fixed Openscreen test subtotals, added Openscreen to Chinese README and project structure.
