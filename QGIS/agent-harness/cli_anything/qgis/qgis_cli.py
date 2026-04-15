@@ -16,6 +16,7 @@ Usage:
 
 from __future__ import annotations
 
+import functools
 import json
 import shlex
 import sys
@@ -107,6 +108,7 @@ def _error_payload(exc: Exception) -> dict:
 def handle_error(func):
     """Normalize domain/backend errors for CLI and REPL use."""
 
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
@@ -120,8 +122,6 @@ def handle_error(func):
                 raise SystemExit(1)
             return None
 
-    wrapper.__name__ = func.__name__
-    wrapper.__doc__ = func.__doc__
     return wrapper
 
 

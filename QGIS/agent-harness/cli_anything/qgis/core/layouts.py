@@ -78,6 +78,10 @@ def _combined_project_extent():
         raise QgisBackendError(
             "Could not determine a map extent. Add at least one layer or pass --extent explicitly."
         )
+
+    if extent.width() == 0 and extent.height() == 0:
+        extent.grow(1.0)
+
     return extent
 
 

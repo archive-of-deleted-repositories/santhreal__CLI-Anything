@@ -82,6 +82,11 @@ def export_layout_pdf(
         project_path=project_path,
     )
 
+    if not os.path.exists(output):
+        raise QgisBackendError(
+            f"Export succeeded but output file was not created: {output}"
+        )
+
     return {
         "format": "pdf",
         "layout": layout_name,
@@ -118,6 +123,11 @@ def export_layout_image(
         parameters=parameters,
         project_path=project_path,
     )
+
+    if not os.path.exists(output):
+        raise QgisBackendError(
+            f"Export succeeded but output file was not created: {output}"
+        )
 
     return {
         "format": "image",

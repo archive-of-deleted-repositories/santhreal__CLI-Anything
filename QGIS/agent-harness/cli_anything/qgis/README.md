@@ -38,7 +38,7 @@ python3 -c "from qgis.core import QgsApplication; print('pyqgis-ok')"
 ## Installation
 
 ```bash
-cd /home/wangh68/project/cli_anything_g/QGIS/agent-harness
+cd QGIS/agent-harness
 python3 -m pip install -e .
 ```
 
