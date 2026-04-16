@@ -972,12 +972,19 @@ Each application received complete, production-ready CLI interfaces — not demo
 <td align="center">✅ 14</td>
 </tr>
 <tr>
+<td align="center"><strong>🗺️ <a href="QGIS/agent-harness/">QGIS</a></strong></td>
+<td>Geospatial Analysis &amp; Mapping</td>
+<td><code>cli-anything-qgis</code></td>
+<td>PyQGIS + qgis_process</td>
+<td align="center">✅ 22</td>
+</tr>
+<tr>
 <td align="center" colspan="4"><strong>Total</strong></td>
-<td align="center"><strong>✅ 2,130</strong></td>
+<td align="center"><strong>✅ 2,152</strong></td>
 </tr>
 </table>
 
-> **100% pass rate** across all 2,130 tests — 1,551 unit tests + 560 end-to-end tests + 19 Node.js tests.
+> **100% pass rate** across all 2,152 tests — 1,564 unit tests + 569 end-to-end tests + 19 Node.js tests.
 
 ---
 
