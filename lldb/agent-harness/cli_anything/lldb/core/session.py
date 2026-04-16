@@ -35,6 +35,7 @@ class LLDBSession:
         self.debugger.SetAsync(False)
         self.target = None
         self.process = None
+        self._process_origin: str | None = None
 
     def target_create(self, exe_path: str, arch: Optional[str] = None) -> Dict[str, Any]:
         arch = arch or self._lldb.LLDB_ARCH_DEFAULT
@@ -66,6 +67,7 @@ class LLDBSession:
         self.process = self.target.AttachToProcessWithID(listener, pid, error)
         if not error.Success():
             raise RuntimeError(f"Attach failed: {error}")
+        self._process_origin = "attached"
         return self._process_info()
 
     def attach_name(self, name: str, wait_for: bool = False) -> Dict[str, Any]:
@@ -78,6 +80,7 @@ class LLDBSession:
         self.process = self.target.Attach(attach_info, error)
         if not error.Success():
             raise RuntimeError(f"Attach failed: {error}")
+        self._process_origin = "attached"
         return self._process_info()
 
     def launch(
@@ -90,6 +93,7 @@ class LLDBSession:
         self.process = self.target.LaunchSimple(args, env, working_dir or os.getcwd())
         if not self.process or not self.process.IsValid():
             raise RuntimeError("Launch failed")
+        self._process_origin = "launched"
         return self._process_info()
 
     def detach(self) -> Dict[str, Any]:
@@ -97,6 +101,8 @@ class LLDBSession:
         error = self.process.Detach()
         if not error.Success():
             raise RuntimeError(f"Detach failed: {error}")
+        self.process = None
+        self._process_origin = None
         return {"status": "detached"}
 
     def breakpoint_set(
@@ -275,13 +281,37 @@ class LLDBSession:
         self.process = self.target.LoadCore(core_path)
         if not self.process or not self.process.IsValid():
             raise RuntimeError(f"Failed to load core: {core_path}")
+        self._process_origin = "core"
         return self._process_info()
 
     def destroy(self):
         if self.process and self.process.IsValid():
-            self.process.Kill()
+            try:
+                if self._process_origin == "attached":
+                    self.process.Detach()
+                elif self._process_origin == "launched":
+                    state = self.process.GetState()
+                    if state not in (
+                        self._lldb.eStateDetached,
+                        self._lldb.eStateExited,
+                    ):
+                        self.process.Kill()
+            except Exception:
+                pass
+            finally:
+                self.process = None
+                self._process_origin = None
         self._lldb.SBDebugger.Destroy(self.debugger)
         self._lldb.SBDebugger.Terminate()
+
+    def session_status(self) -> Dict[str, Any]:
+        has_target = bool(self.target and self.target.IsValid())
+        has_process = bool(self.process and self.process.IsValid())
+        return {
+            "has_target": has_target,
+            "has_process": has_process,
+            "process_origin": self._process_origin if has_process else None,
+        }
 
     def _require_target(self):
         if self.target is None or not self.target.IsValid():

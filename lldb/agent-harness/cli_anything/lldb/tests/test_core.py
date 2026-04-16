@@ -120,7 +120,7 @@ class TestCLIHelp:
         from cli_anything.lldb.lldb_cli import cli
 
         runner = CliRunner()
-        for group in ("target", "process", "breakpoint", "thread", "frame", "step", "memory", "core"):
+        for group in ("target", "process", "breakpoint", "thread", "frame", "step", "memory", "core", "session"):
             result = runner.invoke(cli, [group, "--help"])
             assert result.exit_code == 0, f"{group} help failed"
 
@@ -175,6 +175,68 @@ class TestBackend:
             with pytest.raises(RuntimeError) as exc:
                 lldb_backend.ensure_lldb_importable()
         assert "LLDB not found" in str(exc.value)
+
+
+class TestSessionLifecycle:
+    def _make_session(self):
+        from cli_anything.lldb.core.session import LLDBSession
+
+        session = object.__new__(LLDBSession)
+        session._lldb = MagicMock()
+        session._lldb.eStateDetached = 9
+        session._lldb.eStateExited = 10
+        session.debugger = MagicMock()
+        session.target = None
+        session.process = None
+        session._process_origin = None
+        return session
+
+    def test_destroy_detaches_attached_process(self):
+        from cli_anything.lldb.core.session import LLDBSession
+
+        session = self._make_session()
+        process = MagicMock()
+        process.IsValid.return_value = True
+        session.process = process
+        session._process_origin = "attached"
+
+        LLDBSession.destroy(session)
+
+        process.Detach.assert_called_once()
+        process.Kill.assert_not_called()
+        session._lldb.SBDebugger.Destroy.assert_called_once_with(session.debugger)
+        session._lldb.SBDebugger.Terminate.assert_called_once()
+
+    def test_destroy_kills_launched_process(self):
+        from cli_anything.lldb.core.session import LLDBSession
+
+        session = self._make_session()
+        process = MagicMock()
+        process.IsValid.return_value = True
+        process.GetState.return_value = 5
+        session.process = process
+        session._process_origin = "launched"
+
+        LLDBSession.destroy(session)
+
+        process.Kill.assert_called_once()
+        process.Detach.assert_not_called()
+
+    def test_session_status_reports_target_and_process(self):
+        from cli_anything.lldb.core.session import LLDBSession
+
+        session = self._make_session()
+        session.target = MagicMock()
+        session.target.IsValid.return_value = True
+        session.process = MagicMock()
+        session.process.IsValid.return_value = True
+        session._process_origin = "attached"
+
+        status = LLDBSession.session_status(session)
+
+        assert status["has_target"] is True
+        assert status["has_process"] is True
+        assert status["process_origin"] == "attached"
 
 
 class TestCLISubprocess:

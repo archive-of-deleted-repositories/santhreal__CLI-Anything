@@ -13,14 +13,27 @@ from typing import Optional
 import click
 
 _session = None  # type: ignore
-_repl_mode = False
+_session_file = None
 
 
-def _close_session():
+def _set_session_file(path: str | None):
+    global _session, _session_file
+    if _session_file != path:
+        _session = None
+        _session_file = path
+
+
+def _shutdown_session():
     global _session
     if _session is not None:
-        _session.destroy()
-        _session = None
+        shutdown = getattr(_session, "shutdown", None)
+        try:
+            if callable(shutdown):
+                shutdown()
+            else:
+                _session.destroy()
+        finally:
+            _session = None
 
 
 def _parse_int(value: str) -> int:
@@ -30,22 +43,35 @@ def _parse_int(value: str) -> int:
 def _get_session():
     global _session
     if _session is None:
-        from cli_anything.lldb.core.session import LLDBSession
+        from cli_anything.lldb.utils.session_client import RemoteLLDBSessionProxy, resolve_session_file
 
-        _session = LLDBSession()
+        _session = RemoteLLDBSessionProxy(resolve_session_file(_session_file))
     return _session
+
+
+def _session_status(session):
+    status_fn = getattr(session, "session_status", None)
+    if callable(status_fn):
+        status = status_fn()
+        if isinstance(status, dict):
+            return status
+    return {
+        "has_target": getattr(session, "target", None) is not None,
+        "has_process": getattr(session, "process", None) is not None,
+        "process_origin": None,
+    }
 
 
 def _require_target():
     s = _get_session()
-    if s.target is None:
+    if not _session_status(s).get("has_target"):
         raise click.ClickException("No target. Run: target create --exe <path>")
     return s
 
 
 def _require_process():
     s = _require_target()
-    if s.process is None:
+    if not _session_status(s).get("has_process"):
         raise click.ClickException("No process. Run: process launch/attach or core load")
     return s
 
@@ -83,22 +109,34 @@ def _handle_exc(ctx: click.Context, exc: Exception):
 @click.group(invoke_without_command=True)
 @click.option("--json", "json_mode", is_flag=True, help="Output in JSON format.")
 @click.option("--debug", is_flag=True, help="Show debug tracebacks on errors.")
+@click.option(
+    "--session-file",
+    type=click.Path(dir_okay=False),
+    default=None,
+    help="Optional persistent session state file path.",
+)
 @click.version_option(package_name="cli-anything-lldb")
 @click.pass_context
-def cli(ctx, json_mode, debug):
+def cli(ctx, json_mode, debug, session_file):
     """LLDB CLI - stateful debugger harness with REPL and subcommands."""
+    from cli_anything.lldb.utils.session_client import resolve_session_file
+
     ctx.ensure_object(dict)
     ctx.obj["json_mode"] = json_mode
     ctx.obj["debug"] = debug
+    ctx.obj["session_file"] = str(resolve_session_file(session_file))
+    ctx.obj.setdefault("close_session_on_exit", False)
+    _set_session_file(ctx.obj["session_file"])
     if ctx.invoked_subcommand is None:
+        ctx.obj["close_session_on_exit"] = True
         ctx.invoke(repl)
 
 
 @cli.result_callback()
 @click.pass_context
 def _cleanup(ctx, _result, **_kwargs):
-    if not _repl_mode:
-        _close_session()
+    if ctx.obj.get("close_session_on_exit"):
+        _shutdown_session()
 
 
 # ===========================================================================
@@ -526,6 +564,39 @@ def core_load(ctx, core_path: str):
 
 
 # ===========================================================================
+# session
+# ===========================================================================
+
+
+@cli.group("session")
+def session_group():
+    """Persistent session lifecycle helpers."""
+
+
+@session_group.command("info")
+@click.pass_context
+def session_info(ctx):
+    """Show the current persistent session status."""
+    try:
+        data = _session_status(_get_session())
+        data["session_file"] = ctx.obj.get("session_file")
+        _output(ctx, data)
+    except Exception as exc:
+        _handle_exc(ctx, exc)
+
+
+@session_group.command("close")
+@click.pass_context
+def session_close(ctx):
+    """Close the persistent session and clean up debugger state."""
+    try:
+        _shutdown_session()
+        _output(ctx, {"status": "closed", "session_file": ctx.obj.get("session_file")})
+    except Exception as exc:
+        _handle_exc(ctx, exc)
+
+
+# ===========================================================================
 # repl
 # ===========================================================================
 
@@ -535,9 +606,6 @@ def core_load(ctx, core_path: str):
 def repl(ctx):
     """Start interactive REPL session."""
     from cli_anything.lldb.utils.repl_skin import ReplSkin
-
-    global _repl_mode
-    _repl_mode = True
 
     skin = ReplSkin("lldb", version="0.1.0")
     skin.print_banner()
@@ -553,6 +621,7 @@ def repl(ctx):
         "expr": "<expression>",
         "memory": "read|find",
         "core": "load",
+        "session": "info|close",
         "help": "Show this help",
         "quit": "Exit REPL",
     }
@@ -560,7 +629,13 @@ def repl(ctx):
     try:
         while True:
             try:
-                context = "attached" if _session is not None else ""
+                context = ""
+                if _session is not None:
+                    status = _session_status(_session)
+                    if status.get("has_process"):
+                        context = status.get("process_origin") or "active"
+                    elif status.get("has_target"):
+                        context = "target"
                 line = skin.get_input(pt_session, project_name=context, modified=False)
                 if not line:
                     continue
@@ -571,12 +646,16 @@ def repl(ctx):
                     skin.help(repl_commands)
                     continue
                 args = shlex.split(line, posix=os.name != "nt")
+                if ctx.obj.get("session_file"):
+                    args = ["--session-file", ctx.obj["session_file"], *args]
                 if ctx.obj.get("json_mode"):
                     args = ["--json", *args]
                 if ctx.obj.get("debug"):
                     args = ["--debug", *args]
                 try:
-                    cli.main(args, standalone_mode=False, obj=ctx.obj)
+                    command_obj = dict(ctx.obj)
+                    command_obj["close_session_on_exit"] = False
+                    cli.main(args, standalone_mode=False, obj=command_obj)
                 except SystemExit:
                     pass
                 except click.exceptions.UsageError as exc:
@@ -590,8 +669,7 @@ def repl(ctx):
                 skin.print_goodbye()
                 break
     finally:
-        _repl_mode = False
-        _close_session()
+        _shutdown_session()
 
 
 def main():

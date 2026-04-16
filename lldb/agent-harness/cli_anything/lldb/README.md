@@ -53,9 +53,17 @@ cli-anything-lldb --json frame locals
 # Evaluate expression
 cli-anything-lldb --json expr "argc"
 
+# Close the persistent session when you are done
+cli-anything-lldb --json session close
+
 # Start REPL (default mode)
 cli-anything-lldb
 ```
+
+Non-REPL commands share a persistent LLDB session automatically, so commands
+such as `target create`, `breakpoint set`, `process launch`, and follow-up
+inspection commands can run as separate CLI invocations against the same live
+debugger state.
 
 ## Command Groups
 
@@ -68,6 +76,7 @@ cli-anything-lldb
 - `expr`
 - `memory`: `read`, `find`
 - `core`: `load`
+- `session`: `info`, `close`
 - `repl`
 
 ## JSON Output
@@ -87,5 +96,5 @@ pytest cli_anything/lldb/tests/test_full_e2e.py -v
 ```
 
 E2E tests require:
-- `LLDB_TEST_EXE` pointing to a runnable test executable
+- a working C compiler (`clang`, `gcc`, or `cc`) so the tests can build a small debug helper
 - optional `LLDB_TEST_CORE` for core-load scenario
