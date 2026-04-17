@@ -278,12 +278,17 @@
       "description": "Stateful native debugging via the LLDB Python API with JSON-friendly inspection commands",
       "requires": "LLDB installation with Python bindings available (for example LLVM.LLVM on Windows)",
       "homepage": "https://lldb.llvm.org",
+      "source_url": null,
       "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=lldb/agent-harness",
       "entry_point": "cli-anything-lldb",
       "skill_md": "lldb/agent-harness/cli_anything/lldb/skills/SKILL.md",
       "category": "debugging",
-      "contributor": "AiMiDi",
-      "contributor_url": "https://github.com/AiMiDi"
+      "contributors": [
+        {
+          "name": "AiMiDi",
+          "url": "https://github.com/AiMiDi"
+        }
+      ]
     },
     {
       "name": "zotero",
@@ -516,6 +521,20 @@
           "url": "https://github.com/t4tarzan"
         }
       ]
+    },
+    {
+      "name": "qgis",
+      "display_name": "QGIS",
+      "version": "1.0.0",
+      "description": "Geospatial project authoring, layout export, and processing via PyQGIS and qgis_process",
+      "requires": "QGIS with qgis_process on PATH, PyQGIS importable",
+      "homepage": "https://qgis.org",
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=QGIS/agent-harness",
+      "entry_point": "cli-anything-qgis",
+      "skill_md": "QGIS/agent-harness/cli_anything/qgis/skills/SKILL.md",
+      "category": "scientific",
+      "contributor": "scially",
+      "contributor_url": "https://github.com/scially"
     },
     {
       "name": "chromadb",
