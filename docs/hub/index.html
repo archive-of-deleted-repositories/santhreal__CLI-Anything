@@ -846,16 +846,93 @@
       gap: 0.6rem;
       font-size: 0.78rem;
       flex-wrap: wrap;
+      align-items: center;
     }
 
-    .card-links a {
+    .card-links a,
+    .card-link-btn {
       color: var(--text-tertiary);
       text-decoration: none;
       font-weight: 500;
       transition: color 0.15s;
     }
 
-    .card-links a:hover { color: var(--text-secondary); }
+    .card-link-btn {
+      background: none;
+      border: 0;
+      cursor: pointer;
+      font: inherit;
+      padding: 0;
+    }
+
+    .card-links a:hover,
+    .card-link-btn:hover { color: var(--text-secondary); }
+
+    .skill-popover {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .skill-popover-panel {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 0.45rem);
+      width: min(18rem, calc(100vw - 3rem));
+      padding: 0.7rem;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.36);
+      background: rgba(248, 250, 252, 0.98);
+      color: #0f172a;
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.24);
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+      transition: opacity 0.16s ease, transform 0.16s ease;
+      z-index: 10;
+    }
+
+    .skill-popover.is-open .skill-popover-panel {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .skill-popover-label {
+      display: block;
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 0.45rem;
+    }
+
+    .skill-popover-panel code {
+      display: block;
+      font-size: 0.75rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(226, 232, 240, 0.7);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      border-radius: 8px;
+      padding: 0.55rem 0.6rem;
+    }
+
+    .skill-popover-copy {
+      margin-top: 0.55rem;
+      color: #334155;
+      border-color: rgba(100, 116, 139, 0.34);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .skill-popover-copy:hover {
+      color: #0f172a;
+      border-color: rgba(51, 65, 85, 0.42);
+    }
 
     .card-contributor {
       font-size: 0.75rem;
@@ -1623,13 +1700,38 @@
       }
     }
 
+    function isWebUrl(value) {
+      return /^https?:\/\//i.test(value || '');
+    }
+
+    function isRepoSkillPath(value) {
+      return !/\s/.test(value || '') && /(^\.{0,2}\/|\/|\.md$|\.txt$)/i.test(value || '');
+    }
+
+    function renderSkillAction(value) {
+      if (!value) return '';
+      if (isWebUrl(value)) {
+        return `<a href="${esc(value)}" target="_blank">Skill</a>`;
+      }
+      if (isRepoSkillPath(value)) {
+        return `<a href="${REPO}/blob/main/${esc(value)}" target="_blank">Skill</a>`;
+      }
+      return `
+        <span class="skill-popover">
+          <button class="card-link-btn skill-trigger" type="button" aria-expanded="false" data-skill-value="${escAttr(value)}">Skill</button>
+          <span class="skill-popover-panel">
+            <span class="skill-popover-label">Skill install</span>
+            <code>${esc(value)}</code>
+            <button class="card-copy-btn skill-popover-copy" type="button" data-copy-value="${escAttr(value)}">Copy</button>
+          </span>
+        </span>`;
+    }
+
     function renderHarnessCard(c) {
       const requiresHtml = c.requires
         ? `<div class="card-requires"><strong>Requires</strong> ${esc(c.requires)}</div>`
         : '';
-      const skillLink = c.skill_md
-        ? `<a href="${c.skill_md.startsWith('http') ? c.skill_md : `${REPO}/blob/main/${c.skill_md}`}" target="_blank">Skill</a>`
-        : '';
+      const skillLink = renderSkillAction(c.skill_md);
       const sourceLink = c.source_url
         ? `<a href="${esc(c.source_url)}" target="_blank">Source</a>`
         : `<a href="${REPO}/tree/main/${c.name}/agent-harness" target="_blank">Source</a>`;
@@ -1664,7 +1766,7 @@
             <button class="card-copy-btn" onclick="copyCmd(this, 'pip install cli-anything-hub &amp;&amp; cli-hub install ${esc(c.name)}')">Copy</button>
           </div>
           <div class="card-footer">
-            <div class="card-links">${sourceLink}${skillLink ? ' &middot; ' + skillLink : ''}</div>
+            <div class="card-links">${sourceLink}${skillLink}</div>
             ${contributorHtml}
           </div>
         </div>`;
@@ -1689,6 +1791,7 @@
       const titleHtml = c.homepage
         ? `<a href="${esc(c.homepage)}" target="_blank">${esc(c.display_name)}${EXTERNAL_LINK_SVG}</a>`
         : esc(c.display_name);
+      const skillLink = renderSkillAction(c.skill_md);
       const sourceLink = c.source_url
         ? `<a href="${esc(c.source_url)}" target="_blank">Source</a>`
         : '';
@@ -1729,7 +1832,7 @@
           ${cliHubInstallHtml}
           ${publicNotesHtml}
           <div class="card-footer">
-            <div class="card-links">${sourceLink}</div>
+            <div class="card-links">${sourceLink}${skillLink}</div>
             ${contributorHtml}
           </div>
         </div>`;
@@ -1742,12 +1845,68 @@
       });
     }
 
+    function toggleSkillPopover(trigger) {
+      const popover = trigger.closest('.skill-popover');
+      if (!popover) return;
+      const shouldOpen = !popover.classList.contains('is-open');
+      document.querySelectorAll('.skill-popover.is-open').forEach((node) => {
+        node.classList.remove('is-open');
+        const btn = node.querySelector('.skill-trigger');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      });
+      if (!shouldOpen) return;
+      popover.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+
     function esc(s) {
       if (!s) return '';
       const d = document.createElement('div');
       d.textContent = s;
       return d.innerHTML;
     }
+
+    function escAttr(s) {
+      if (!s) return '';
+      return String(s)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    document.addEventListener('click', (e) => {
+      const copyBtn = e.target.closest('.skill-popover-copy');
+      if (copyBtn) {
+        e.preventDefault();
+        e.stopPropagation();
+        copyCmd(copyBtn, copyBtn.dataset.copyValue);
+        return;
+      }
+
+      const trigger = e.target.closest('.skill-trigger');
+      if (trigger) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleSkillPopover(trigger);
+        return;
+      }
+
+      document.querySelectorAll('.skill-popover.is-open').forEach((node) => {
+        node.classList.remove('is-open');
+        const btn = node.querySelector('.skill-trigger');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      document.querySelectorAll('.skill-popover.is-open').forEach((node) => {
+        node.classList.remove('is-open');
+        const btn = node.querySelector('.skill-trigger');
+        if (btn) btn.setAttribute('aria-expanded', 'false');
+      });
+    });
 
     // Wire up search and sort for each deck
     document.getElementById('search-harness').addEventListener('input', (e) => {
