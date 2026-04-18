@@ -1,3 +1,9 @@
+---
+name: "cli-anything-unimol-tools"
+description: >-
+  Interactive CLI for Uni-Mol molecular property prediction training and inference workflows.
+---
+
 # Uni-Mol Tools - Molecular Property Prediction CLI
 
 **Package**: `cli-anything-unimol-tools`

@@ -1,3 +1,9 @@
+---
+name: "cli-anything-exa"
+description: >-
+  Agent-native CLI for Exa web search and content retrieval workflows.
+---
+
 # Exa CLI Skill
 
 ## Identity
