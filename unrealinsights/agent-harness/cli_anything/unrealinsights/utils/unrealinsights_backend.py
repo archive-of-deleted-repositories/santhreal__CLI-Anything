@@ -455,10 +455,11 @@ def terminate_process(pid: int, force: bool = False, timeout: float | None = Non
         result = run_process(command, timeout=timeout, wait=True)
     else:
         sig = signal.SIGKILL if force else signal.SIGTERM
+        signal_arg = f"-{sig.name}"
         try:
             os.kill(pid, sig)
             result = {
-                "command": ["kill", str(sig), str(pid)],
+                "command": ["kill", signal_arg, str(pid)],
                 "waited": True,
                 "timed_out": False,
                 "exit_code": 0,
@@ -468,7 +469,7 @@ def terminate_process(pid: int, force: bool = False, timeout: float | None = Non
             }
         except OSError as exc:
             result = {
-                "command": ["kill", str(sig), str(pid)],
+                "command": ["kill", signal_arg, str(pid)],
                 "waited": True,
                 "timed_out": False,
                 "exit_code": 1,

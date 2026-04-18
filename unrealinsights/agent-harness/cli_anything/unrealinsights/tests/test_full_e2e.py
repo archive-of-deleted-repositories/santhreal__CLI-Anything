@@ -13,15 +13,23 @@ from pathlib import Path
 
 import pytest
 
+from cli_anything.unrealinsights.utils.unrealinsights_backend import resolve_unrealinsights_exe
+
 HARNESS_ROOT = str(Path(__file__).resolve().parents[3])
 TEST_TRACE = os.environ.get("UNREALINSIGHTS_TEST_TRACE", "")
 TEST_TARGET_EXE = os.environ.get("UNREALINSIGHTS_TEST_TARGET_EXE", "")
 
+
+def _has_local_insights() -> bool:
+    try:
+        return bool(resolve_unrealinsights_exe(required=False).get("available"))
+    except RuntimeError:
+        return False
+
+
 HAS_TRACE = os.path.isfile(TEST_TRACE) if TEST_TRACE else False
 HAS_TARGET = os.path.isfile(TEST_TARGET_EXE) if TEST_TARGET_EXE else False
-HAS_LOCAL_INSIGHTS = os.path.isfile(
-    r"D:\Program Files\Epic Games\UE_5.5\Engine\Binaries\Win64\UnrealInsights.exe"
-) or bool(os.environ.get("UNREALINSIGHTS_EXE"))
+HAS_LOCAL_INSIGHTS = _has_local_insights()
 
 skip_no_trace = pytest.mark.skipif(not HAS_TRACE, reason="UNREALINSIGHTS_TEST_TRACE not set or missing")
 skip_no_target = pytest.mark.skipif(not HAS_TARGET, reason="UNREALINSIGHTS_TEST_TARGET_EXE not set or missing")
