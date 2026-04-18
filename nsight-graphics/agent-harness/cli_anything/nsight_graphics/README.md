@@ -58,7 +58,7 @@ cli-anything-nsight-graphics ^
 
 ```bash
 cli-anything-nsight-graphics launch detached ^
-  --activity "Frame Debugger" ^
+  --activity "Graphics Capture" ^
   --exe "C:\VulkanSDK\1.3.290.0\Bin\vkcube.exe"
 ```
 
@@ -66,7 +66,7 @@ cli-anything-nsight-graphics launch detached ^
 
 ```bash
 cli-anything-nsight-graphics launch attach ^
-  --activity "Frame Debugger" ^
+  --activity "Graphics Capture" ^
   --pid 12345
 ```
 
@@ -168,20 +168,32 @@ When `gpu-trace capture --summarize` is used, the result also includes:
 | Variable | Purpose |
 |----------|---------|
 | `NSIGHT_GRAPHICS_PATH` | Override executable discovery |
-| `NSIGHT_GRAPHICS_TEST_EXE` | E2E target executable |
-| `NSIGHT_GRAPHICS_TEST_ARGS` | Optional E2E target arguments |
-| `NSIGHT_GRAPHICS_TEST_WORKDIR` | Optional E2E working directory |
+| `NSIGHT_GRAPHICS_TEST_EXE` | Shared fallback E2E target executable |
+| `NSIGHT_GRAPHICS_TEST_ARGS` | Shared fallback E2E target arguments |
+| `NSIGHT_GRAPHICS_TEST_WORKDIR` | Shared fallback E2E working directory |
+| `NSIGHT_GRAPHICS_FRAME_TEST_EXE` | Optional frame-capture-specific executable override |
+| `NSIGHT_GRAPHICS_FRAME_TEST_ARGS` | Optional frame-capture-specific args override |
+| `NSIGHT_GRAPHICS_FRAME_TEST_WORKDIR` | Optional frame-capture-specific workdir override |
+| `NSIGHT_GRAPHICS_GPU_TRACE_TEST_EXE` | Optional GPU Trace-specific executable override |
+| `NSIGHT_GRAPHICS_GPU_TRACE_TEST_ARGS` | Optional GPU Trace-specific args override |
+| `NSIGHT_GRAPHICS_GPU_TRACE_TEST_WORKDIR` | Optional GPU Trace-specific workdir override |
+| `NSIGHT_GRAPHICS_CPP_TEST_EXE` | Optional C++ Capture-specific executable override |
+| `NSIGHT_GRAPHICS_CPP_TEST_ARGS` | Optional C++ Capture-specific args override |
+| `NSIGHT_GRAPHICS_CPP_TEST_WORKDIR` | Optional C++ Capture-specific workdir override |
 
 ## E2E Test Prerequisites
 
 The E2E suite assumes:
 
 - Nsight Graphics is installed and discoverable
-- `NSIGHT_GRAPHICS_TEST_EXE` points to a graphics workload that Nsight can
-  launch or capture
-- optional args/workdir are provided if the test target requires them
+- either `NSIGHT_GRAPHICS_TEST_EXE` or the activity-specific `NSIGHT_GRAPHICS_*_TEST_EXE`
+  overrides point to graphics workloads that Nsight can launch for that activity
+- optional args/workdir are provided if the chosen test target requires them
 
 Typical examples include `vkcube.exe`, game samples, or internal engine demos.
+Different activities may require different targets on newer Nsight builds, so
+the E2E suite accepts per-activity overrides instead of assuming one executable
+works for frame capture, GPU Trace, and C++ Capture.
 
 ## Multiple Installations
 

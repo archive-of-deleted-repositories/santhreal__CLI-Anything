@@ -241,6 +241,17 @@ class TestHelpParsing:
         assert "--wait-frames" in result["activity_options"]["Frame Debugger"]
         assert "--metric-set-id" in result["activity_options"]["GPU Trace Profiler"]
 
+    def test_resolve_activity_name_maps_legacy_frame_debugger_to_graphics_capture(self):
+        report = {
+            "supported_activities": [
+                "Graphics Capture",
+                "Generate C++ Capture",
+                "GPU Trace Profiler",
+            ]
+        }
+        assert backend.resolve_activity_name(report, "Frame Debugger") == "Graphics Capture"
+        assert backend.resolve_activity_name(report, "Graphics Capture") == "Graphics Capture"
+
 
 class TestCommandBuilders:
     def test_build_unified_command_formats_args_and_env(self):
@@ -277,6 +288,12 @@ class TestCommandBuilders:
         assert "--capture-countdown-timer" in command
         assert command[command.index("--capture-countdown-timer") + 1] == "3000"
 
+    @patch("cli_anything.nsight_graphics.utils.nsight_graphics_backend.subprocess.run")
+    def test_run_command_suppresses_graphics_capture_suggestion_dialog(self, run_mock):
+        run_mock.return_value = type("Result", (), {"returncode": 0, "stdout": "", "stderr": ""})()
+        backend.run_command(["C:/Nsight/ngfx.exe", "--help"])
+        assert run_mock.call_args.kwargs["env"]["NSIGHT_SUGGEST_GRAPHICS_CAPTURE"] == "0"
+
     def test_diff_snapshots_reports_new_nonempty_files(self, tmp_path):
         before = backend.snapshot_files([str(tmp_path)])
         artifact = tmp_path / "capture.ngfx-capture"
@@ -286,6 +303,12 @@ class TestCommandBuilders:
         assert len(diff) == 1
         assert diff[0]["path"].endswith("capture.ngfx-capture")
         assert diff[0]["size"] > 0
+
+    def test_activity_artifact_roots_keeps_default_graphics_capture_location(self):
+        roots = backend.activity_artifact_roots("Graphics Capture", "D:/captures")
+        assert str(Path("D:/captures").resolve()) in roots
+        assert any(root.endswith("Documents\\NVIDIA Nsight Graphics") for root in roots)
+        assert any(root.endswith("Documents\\NVIDIA Nsight Graphics\\GraphicsCaptures") for root in roots)
 
     def test_gpu_trace_summary_from_export_dir(self, tmp_path):
         base = tmp_path / "BASE"
@@ -415,6 +438,45 @@ class TestCoreModules:
         assert result["tool_mode"] == "unified"
         assert result["activity"] == "Frame Debugger"
         assert result["artifacts"]
+
+    @patch("cli_anything.nsight_graphics.core.frame.backend.run_with_artifacts")
+    @patch("cli_anything.nsight_graphics.core.frame.backend.build_unified_command")
+    @patch("cli_anything.nsight_graphics.core.frame.backend.probe_installation")
+    def test_frame_capture_maps_graphics_capture_options(self, probe_mock, build_mock, run_mock):
+        probe_mock.return_value = {
+            "binaries": {"ngfx": "C:/Nsight/ngfx.exe", "ngfx_capture": None, "ngfx_replay": None},
+            "supported_activities": ["Graphics Capture", "GPU Trace Profiler"],
+        }
+        build_mock.return_value = ["C:/Nsight/ngfx.exe", "--activity", "Graphics Capture"]
+        run_mock.return_value = {
+            "ok": True,
+            "returncode": 0,
+            "stdout": "",
+            "stderr": "",
+            "command": "ngfx",
+            "artifacts": [{"path": "D:/out/capture.ngfx-capture", "size": 10, "mtime_ns": 1}],
+        }
+
+        result = frame.capture_frame(
+            nsight_path=None,
+            project=None,
+            output_dir="D:/out",
+            hostname=None,
+            platform_name=None,
+            exe="C:/demo.exe",
+            working_dir=None,
+            args=(),
+            envs=(),
+            wait_seconds=1,
+            wait_frames=None,
+            wait_hotkey=False,
+            export_frame_perf_metrics=False,
+            export_range_perf_metrics=False,
+        )
+
+        assert build_mock.call_args.kwargs["activity"] == "Graphics Capture"
+        assert build_mock.call_args.kwargs["extra_args"] == ["--frame-count", "1", "--elapsed-time", "1"]
+        assert result["activity"] == "Graphics Capture"
 
     @patch("cli_anything.nsight_graphics.core.frame.backend.probe_installation")
     def test_frame_capture_split_mode_rejects_perf_exports(self, probe_mock):

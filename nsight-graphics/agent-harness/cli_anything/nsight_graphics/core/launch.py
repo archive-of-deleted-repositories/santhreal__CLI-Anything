@@ -23,12 +23,13 @@ def launch_detached(
     """Launch a target under Nsight and exit immediately."""
     report = backend.probe_installation(nsight_path=nsight_path)
     binaries = report["binaries"]
+    resolved_activity = backend.resolve_activity_name(report, activity)
     backend.require_binary(binaries, "ngfx")
     backend.require_launch_target(project=project, exe=exe)
 
     command = backend.build_unified_command(
         binaries,
-        activity=activity,
+        activity=resolved_activity,
         project=project,
         output_dir=output_dir,
         hostname=hostname,
@@ -41,7 +42,7 @@ def launch_detached(
     )
     result = backend.run_command(command, timeout=120)
     result["tool_mode"] = "unified"
-    result["activity"] = activity
+    result["activity"] = resolved_activity
     return result
 
 
@@ -58,11 +59,12 @@ def attach(
     """Attach an activity to a running PID."""
     report = backend.probe_installation(nsight_path=nsight_path)
     binaries = report["binaries"]
+    resolved_activity = backend.resolve_activity_name(report, activity)
     backend.require_binary(binaries, "ngfx")
 
     command = backend.build_unified_command(
         binaries,
-        activity=activity,
+        activity=resolved_activity,
         project=project,
         output_dir=output_dir,
         hostname=hostname,
@@ -71,6 +73,6 @@ def attach(
     )
     result = backend.run_command(command, timeout=120)
     result["tool_mode"] = "unified"
-    result["activity"] = activity
+    result["activity"] = resolved_activity
     result["pid"] = pid
     return result

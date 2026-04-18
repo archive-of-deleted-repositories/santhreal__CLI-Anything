@@ -29,6 +29,11 @@ INSTALL_INSTRUCTIONS = (
     "  C:\\Program Files\\NVIDIA Corporation\\Nsight Graphics <version>\\host\\windows-desktop-nomad-x64"
 )
 
+_ACTIVITY_ALIASES = {
+    "frame debugger": ("Frame Debugger", "Graphics Capture"),
+    "graphics capture": ("Graphics Capture", "Frame Debugger"),
+}
+
 
 def _command_string(args: Sequence[str]) -> str:
     """Render a command for display."""
@@ -515,6 +520,25 @@ def parse_option_help(text: str) -> list[str]:
     return _dedupe(options)
 
 
+def resolve_activity_name(report: dict[str, Any], requested: str) -> str:
+    """Map a requested activity name onto the current Nsight installation."""
+    supported = report.get("supported_activities") or []
+    if not supported:
+        return requested
+
+    supported_lookup = {item.lower(): item for item in supported}
+    direct = supported_lookup.get(requested.lower())
+    if direct:
+        return direct
+
+    aliases = _ACTIVITY_ALIASES.get(requested.lower(), (requested,))
+    for alias in aliases:
+        resolved = supported_lookup.get(alias.lower())
+        if resolved:
+            return resolved
+    return requested
+
+
 def _combined_output(result: dict[str, Any]) -> str:
     """Combine stdout and stderr for parsing."""
     stdout = result.get("stdout", "") or ""
@@ -530,12 +554,15 @@ def run_command(
 ) -> dict[str, Any]:
     """Run a subprocess and normalize the result."""
     try:
+        env = os.environ.copy()
+        env.setdefault("NSIGHT_SUGGEST_GRAPHICS_CAPTURE", "0")
         proc = subprocess.run(
             list(args),
             capture_output=True,
             text=True,
             cwd=cwd,
             timeout=timeout,
+            env=env,
         )
         return {
             "ok": proc.returncode == 0,
@@ -820,16 +847,19 @@ def default_output_dir() -> str:
 
 def activity_artifact_roots(activity: str, output_dir: Optional[str]) -> list[str]:
     """Return directories to scan for generated artifacts."""
-    if output_dir:
-        return [str(Path(output_dir).resolve())]
-
     base = Path(default_output_dir())
-    roots = [str(base)]
+    roots: list[str] = []
+    if output_dir:
+        roots.append(str(Path(output_dir).resolve()))
+    else:
+        roots.append(str(base))
+
     normalized = activity.lower()
-    if normalized == "frame debugger":
-        roots.insert(0, str(base / "GraphicsCaptures"))
+    if normalized in {"frame debugger", "graphics capture"}:
+        roots.extend([str(base), str(base / "GraphicsCaptures")])
     elif normalized == "gpu trace profiler":
-        roots.append(str(base / "GPUTrace"))
+        if not output_dir:
+            roots.append(str(base / "GPUTrace"))
     elif normalized == "generate c++ capture":
         roots.append(str(base / "CppCaptures"))
     return _dedupe(roots)
