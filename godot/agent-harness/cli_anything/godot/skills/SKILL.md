@@ -1,3 +1,9 @@
+---
+name: "cli-anything-godot"
+description: >-
+  Agent-native CLI for Godot project management, scenes, exports, and script execution.
+---
+
 # Godot Engine CLI
 
 Agent-native CLI for the Godot game engine. Manage projects, scenes, exports, and GDScript execution from the command line.
