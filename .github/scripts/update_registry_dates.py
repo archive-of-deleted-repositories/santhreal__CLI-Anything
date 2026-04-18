@@ -9,7 +9,7 @@ import shlex
 import subprocess
 import urllib.parse
 import urllib.request
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 
@@ -43,7 +43,7 @@ def _fetch_last_modified(url: str) -> str | None:
             last_modified = resp.headers.get("Last-Modified")
             if not last_modified:
                 return None
-            return parsedate_to_datetime(last_modified).astimezone(UTC).strftime("%Y-%m-%d")
+            return parsedate_to_datetime(last_modified).astimezone(timezone.utc).strftime("%Y-%m-%d")
     except Exception:
         return None
 
@@ -81,7 +81,7 @@ def get_last_modified(target_path: Path) -> str | None:
         return None
 
     try:
-        return datetime.fromtimestamp(timestamp, tz=UTC).strftime("%Y-%m-%d")
+        return datetime.fromtimestamp(timestamp, tz=timezone.utc).strftime("%Y-%m-%d")
     except (OverflowError, OSError, ValueError):
         return None
 
