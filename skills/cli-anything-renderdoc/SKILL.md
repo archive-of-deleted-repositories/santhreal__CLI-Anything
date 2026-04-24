@@ -1,5 +1,5 @@
 ---
-name: cli-anything-renderdoc
+name: "cli-anything-renderdoc"
 description: CLI harness for RenderDoc graphics debugger capture analysis
 version: 0.1.0
 command: cli-anything-renderdoc

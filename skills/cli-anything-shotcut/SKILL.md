@@ -1,6 +1,5 @@
 ---
-name: >-
-  cli-anything-shotcut
+name: "cli-anything-shotcut"
 description: >-
   Command-line interface for Shotcut - A stateful command-line interface for video editing, built on the MLT XML format. Designed for AI ag...
 ---

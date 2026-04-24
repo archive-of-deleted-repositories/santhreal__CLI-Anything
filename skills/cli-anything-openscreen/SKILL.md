@@ -1,6 +1,5 @@
 ---
-name: >-
-  cli-anything-openscreen
+name: "cli-anything-openscreen"
 description: >-
   Command-line interface for Openscreen — a screen recording editor.
   A stateful CLI for editing screen recordings with zoom, speed ramps,
