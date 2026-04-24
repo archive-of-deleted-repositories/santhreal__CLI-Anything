@@ -3123,21 +3123,17 @@
         document.addEventListener(evt, onHumanInteraction, { once: false, passive: true });
       });
 
-      // ── Live analytics (PostHog HogQL) ──
-      // Read-only personal API key, scoped to `query:read` on project 393992 only.
-      // See https://us.posthog.com/settings/user-api-keys — create a scoped key
-      // and paste it below. The Umami baseline is fixed at the migration cutover
-      // and PostHog counts are added on top of it.
-      const POSTHOG_READONLY_KEY = '***REMOVED***';
-      const POSTHOG_QUERY_HOST = 'https://us.posthog.com';
-      const POSTHOG_QUERY_PROJECT_ID = '393992';
+      // ── Live analytics (PostHog HogQL via Cloudflare Worker proxy) ──
+      // The PostHog personal API key lives in a Cloudflare Worker secret
+      // (repo: ~/clianything-analytics-worker). The worker allow-lists this
+      // exact HogQL shape and forwards to us.posthog.com. The baseline
+      // BASELINE_STATS is the Umami total at migration cutover; live PostHog
+      // counts since then are added on top.
+      const ANALYTICS_PROXY_URL = 'https://analytics.clianything.cc/';
       const MIGRATION_STARTED_AT = '2026-04-23T09:06:38Z';
       const LIVE_STATS_REFRESH_MS = 60_000;
 
       async function fetchPosthogIncrement() {
-        if (!POSTHOG_READONLY_KEY || POSTHOG_READONLY_KEY.indexOf('REPLACE') !== -1) {
-          throw new Error('posthog readonly key not configured');
-        }
         const hogql = (
           "select " +
           "countIf(event = 'visit-human' and properties.source = 'web' and properties.site = 'clianything.cc') as human, " +
@@ -3147,12 +3143,9 @@
           "from events " +
           "where timestamp >= parseDateTimeBestEffort('" + MIGRATION_STARTED_AT + "')"
         );
-        const response = await fetch(POSTHOG_QUERY_HOST + '/api/projects/' + POSTHOG_QUERY_PROJECT_ID + '/query/', {
+        const response = await fetch(ANALYTICS_PROXY_URL, {
           method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + POSTHOG_READONLY_KEY,
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query: { kind: 'HogQLQuery', query: hogql } }),
         });
         if (!response.ok) throw new Error('posthog query http ' + response.status);
