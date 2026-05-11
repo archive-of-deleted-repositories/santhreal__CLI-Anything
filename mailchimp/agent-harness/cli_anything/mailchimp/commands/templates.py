@@ -28,19 +28,19 @@ def templates_group(ctx):
     """templates resource commands."""
 
 @templates_group.command("list")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
-@click.option("--count", default=None, type=int, help="The number of records to return. Default value is 10. Maximum value is 1000")
-@click.option("--offset", default=None, type=int, help="Used for [pagination](https://mailchimp.com/developer/marketing/docs/methods-par")
-@click.option("--created-by", default=None, help="The Mailchimp account user who created the template.")
-@click.option("--since-date-created", default=None, help="Restrict the response to templates created after the set date. Uses ISO 8601 tim")
-@click.option("--before-date-created", default=None, help="Restrict the response to templates created before the set date. Uses ISO 8601 ti")
-@click.option("--type", default=None, help="Limit results based on template type.")
-@click.option("--category", default=None, help="Limit results based on category.")
-@click.option("--folder-id", default=None, help="The unique folder id.")
-@click.option("--sort-field", default=None, help="Returns user templates sorted by the specified field.")
-@click.option("--content-type", default=None, help="Limit results based on how the template's content is put together. Only template")
-@click.option("--sort-dir", default=None, help="Determines the order direction for sorted results.")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--count", "count", default=None, type=int, help="The number of records to return. Default value is 10. Maximum value is 1000")
+@click.option("--offset", "offset", default=None, type=int, help="Used for [pagination](https://mailchimp.com/developer/marketing/docs/methods-par")
+@click.option("--created-by", "created_by", default=None, help="The Mailchimp account user who created the template.")
+@click.option("--since-date-created", "since_date_created", default=None, help="Restrict the response to templates created after the set date. Uses ISO 8601 tim")
+@click.option("--before-date-created", "before_date_created", default=None, help="Restrict the response to templates created before the set date. Uses ISO 8601 ti")
+@click.option("--type", "type_", default=None, help="Limit results based on template type.")
+@click.option("--category", "category", default=None, help="Limit results based on category.")
+@click.option("--folder-id", "folder_id", default=None, help="The unique folder id.")
+@click.option("--sort-field", "sort_field", default=None, help="Returns user templates sorted by the specified field.")
+@click.option("--content-type", "content_type", default=None, help="Limit results based on how the template's content is put together. Only template")
+@click.option("--sort-dir", "sort_dir", default=None, help="Determines the order direction for sorted results.")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_list_(ctx, fields, exclude_fields, count, offset, created_by, since_date_created, before_date_created, type_, category, folder_id, sort_field, content_type, sort_dir, extra_params):
@@ -116,8 +116,8 @@ def _cmd_delete(ctx, template_id, extra_params):
 
 @templates_group.command("get")
 @click.argument("TEMPLATE_ID")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_get(ctx, template_id, fields, exclude_fields, extra_params):
@@ -163,8 +163,8 @@ def _cmd_update(ctx, template_id, data, extra_params):
 
 @templates_group.command("list-templates-id-default-content")
 @click.argument("TEMPLATE_ID")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_list_templates_id_default_content(ctx, template_id, fields, exclude_fields, extra_params):

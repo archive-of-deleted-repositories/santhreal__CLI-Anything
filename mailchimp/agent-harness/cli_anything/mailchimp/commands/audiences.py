@@ -29,16 +29,16 @@ def audiences_group(ctx):
 
 @audiences_group.command("list")
 @click.argument("AUDIENCE_ID")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
-@click.option("--count", default=None, type=int, help="The number of records to return. Default value is 10. Maximum value is 1000")
-@click.option("--cursor", default=None, help="Paginate through a collection of records by setting the `cursor` parameter to a ")
-@click.option("--created-before", default=None, help="Restricts the response to contacts created at or before the specified time (incl")
-@click.option("--created-since", default=None, help="Restricts the response to contacts created after the specified time (exclusive).")
-@click.option("--updated-before", default=None, help="Restricts the response to contacts updated at or before the specified time (incl")
-@click.option("--updated-since", default=None, help="Restricts the response to contacts updated after the specified time (exclusive).")
-@click.option("--sort-field", default=None, help="Specifies the field to sort the returned contacts by.")
-@click.option("--sort-dir", default=None, help="Determines the order direction for sorted results.")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--count", "count", default=None, type=int, help="The number of records to return. Default value is 10. Maximum value is 1000")
+@click.option("--cursor", "cursor", default=None, help="Paginate through a collection of records by setting the `cursor` parameter to a ")
+@click.option("--created-before", "created_before", default=None, help="Restricts the response to contacts created at or before the specified time (incl")
+@click.option("--created-since", "created_since", default=None, help="Restricts the response to contacts created after the specified time (exclusive).")
+@click.option("--updated-before", "updated_before", default=None, help="Restricts the response to contacts updated at or before the specified time (incl")
+@click.option("--updated-since", "updated_since", default=None, help="Restricts the response to contacts updated after the specified time (exclusive).")
+@click.option("--sort-field", "sort_field", default=None, help="Specifies the field to sort the returned contacts by.")
+@click.option("--sort-dir", "sort_dir", default=None, help="Determines the order direction for sorted results.")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_list_(ctx, audience_id, fields, exclude_fields, count, cursor, created_before, created_since, updated_before, updated_since, sort_field, sort_dir, extra_params):
@@ -71,8 +71,8 @@ def _cmd_list_(ctx, audience_id, fields, exclude_fields, count, cursor, created_
 @audiences_group.command("create")
 @click.argument("AUDIENCE_ID")
 @click.option("--data", default=None, help="Request body as JSON string.")
-@click.option("--merge-field-validation-mode", default=None, help="Defines how merge field validation is handled. When set to `ignore_required_chec")
-@click.option("--data-mode", default=None, help="Indicates the data processing mode. In `historical` mode, contact data changes d")
+@click.option("--merge-field-validation-mode", "merge_field_validation_mode", default=None, help="Defines how merge field validation is handled. When set to `ignore_required_chec")
+@click.option("--data-mode", "data_mode", default=None, help="Indicates the data processing mode. In `historical` mode, contact data changes d")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_create(ctx, audience_id, data, merge_field_validation_mode, data_mode, extra_params):
@@ -98,8 +98,8 @@ def _cmd_create(ctx, audience_id, data, merge_field_validation_mode, data_mode, 
 @audiences_group.command("get")
 @click.argument("AUDIENCE_ID")
 @click.argument("CONTACT_ID")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_get(ctx, audience_id, contact_id, fields, exclude_fields, extra_params):
@@ -125,8 +125,8 @@ def _cmd_get(ctx, audience_id, contact_id, fields, exclude_fields, extra_params)
 @click.argument("AUDIENCE_ID")
 @click.argument("CONTACT_ID")
 @click.option("--data", default=None, help="Request body as JSON string.")
-@click.option("--merge-field-validation-mode", default=None, help="Defines how merge field validation is handled. When set to `ignore_required_chec")
-@click.option("--data-mode", default=None, help="Indicates the data processing mode. In `historical` mode, contact data changes d")
+@click.option("--merge-field-validation-mode", "merge_field_validation_mode", default=None, help="Defines how merge field validation is handled. When set to `ignore_required_chec")
+@click.option("--data-mode", "data_mode", default=None, help="Indicates the data processing mode. In `historical` mode, contact data changes d")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_update(ctx, audience_id, contact_id, data, merge_field_validation_mode, data_mode, extra_params):

@@ -162,6 +162,7 @@ def _generate_command_func(
     # I3: All query params (no arbitrary cap); --extra-params escape hatch
     for p in query_params:
         flag = _slugify(p["name"])
+        py_name = _safe_name(p["name"]).lower()
         ptype = _param_type_to_click(p)
         desc = p.get("description", "").replace('"', '\\"').split("\n")[0][:80]
         if ptype == "int":
@@ -171,7 +172,7 @@ def _generate_command_func(
         else:
             type_clause = ""
         decorators.append(
-            f'@click.option("--{flag}", default=None, {type_clause}help="{desc}")'
+            f'@click.option("--{flag}", "{py_name}", default=None, {type_clause}help="{desc}")'
         )
 
     # Escape hatch for extra/future query params
@@ -341,6 +342,10 @@ def _generate_module(tag: str, operations: list[tuple[str, str, dict]]) -> str:
             cmd_name, method, path, operation, path_params, query_params, body_param
         )
         body_parts.append(func_code)
+        if tag.lower() == "campaigns" and cmd_name == "list-campaigns-id-content":
+            body_parts.append('campaigns_group.add_command(_cmd_list_campaigns_id_content, "list-content")\n')
+        if tag.lower() == "campaigns" and cmd_name == "list-campaigns-id-send-checklist":
+            body_parts.append('campaigns_group.add_command(_cmd_list_campaigns_id_send_checklist, "list-send-checklist")\n')
         if tag.lower() == "lists" and cmd_name == "create-lists-id-members":
             body_parts.append('lists_group.add_command(_cmd_create_lists_id_members, "create-members")\n')
 

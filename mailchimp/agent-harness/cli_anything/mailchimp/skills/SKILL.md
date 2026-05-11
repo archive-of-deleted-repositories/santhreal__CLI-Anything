@@ -111,14 +111,14 @@ cd mailchimp/agent-harness && pip install -e .
 
 | Command | Description |
 |---|---|
-| `ecommerce list` | List stores |
+| `ecommerce list-ecommerce-stores` | List stores |
 | `ecommerce get <STORE_ID>` | Get store info |
 | `ecommerce create --data '<json>'` | Add store |
-| `ecommerce list-orders <STORE_ID>` | List orders |
-| `ecommerce list-products <STORE_ID>` | List products |
-| `ecommerce list-customers <STORE_ID>` | List customers |
-| `ecommerce list-carts <STORE_ID>` | List carts |
-| `ecommerce list-promo-codes <STORE_ID> <PROMO_RULE_ID>` | List promo codes |
+| `ecommerce list-ecommerce-stores-id-orders <STORE_ID>` | List orders |
+| `ecommerce list-ecommerce-stores-id-products <STORE_ID>` | List products |
+| `ecommerce list-ecommerce-stores-id-customers <STORE_ID>` | List customers |
+| `ecommerce list-ecommerce-stores-id-carts <STORE_ID>` | List carts |
+| `ecommerce list-ecommerce-stores-id-promocodes <PROMO_RULE_ID> <STORE_ID>` | List promo codes |
 
 ### Other Resources
 

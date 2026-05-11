@@ -28,23 +28,23 @@ def campaigns_group(ctx):
     """campaigns resource commands."""
 
 @campaigns_group.command("list")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
-@click.option("--count", default=None, type=int, help="The number of records to return. Default value is 10. Maximum value is 1000")
-@click.option("--offset", default=None, type=int, help="Used for [pagination](https://mailchimp.com/developer/marketing/docs/methods-par")
-@click.option("--type", default=None, help="The campaign type.")
-@click.option("--status", default=None, help="The status of the campaign.")
-@click.option("--before-send-time", default=None, help="Restrict the response to campaigns sent before the set time. Uses ISO 8601 time ")
-@click.option("--since-send-time", default=None, help="Restrict the response to campaigns sent after the set time. Uses ISO 8601 time f")
-@click.option("--before-create-time", default=None, help="Restrict the response to campaigns created before the set time. Uses ISO 8601 ti")
-@click.option("--since-create-time", default=None, help="Restrict the response to campaigns created after the set time. Uses ISO 8601 tim")
-@click.option("--list-id", default=None, help="The unique id for the list.")
-@click.option("--folder-id", default=None, help="The unique folder id.")
-@click.option("--member-id", default=None, help="Retrieve campaigns sent to a particular list member. Member ID is The MD5 hash o")
-@click.option("--sort-field", default=None, help="Returns files sorted by the specified field.")
-@click.option("--sort-dir", default=None, help="Determines the order direction for sorted results.")
-@click.option("--include-resend-shortcut-eligibility", default=None, type=bool, help="Return the `resend_shortcut_eligibility` field in the response, which tells you ")
-@click.option("--include-resend-shortcut-usage", default=None, type=bool, help="Return the `resend_shortcut_usage` field in the response.  This includes informa")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--count", "count", default=None, type=int, help="The number of records to return. Default value is 10. Maximum value is 1000")
+@click.option("--offset", "offset", default=None, type=int, help="Used for [pagination](https://mailchimp.com/developer/marketing/docs/methods-par")
+@click.option("--type", "type_", default=None, help="The campaign type.")
+@click.option("--status", "status", default=None, help="The status of the campaign.")
+@click.option("--before-send-time", "before_send_time", default=None, help="Restrict the response to campaigns sent before the set time. Uses ISO 8601 time ")
+@click.option("--since-send-time", "since_send_time", default=None, help="Restrict the response to campaigns sent after the set time. Uses ISO 8601 time f")
+@click.option("--before-create-time", "before_create_time", default=None, help="Restrict the response to campaigns created before the set time. Uses ISO 8601 ti")
+@click.option("--since-create-time", "since_create_time", default=None, help="Restrict the response to campaigns created after the set time. Uses ISO 8601 tim")
+@click.option("--list-id", "list_id", default=None, help="The unique id for the list.")
+@click.option("--folder-id", "folder_id", default=None, help="The unique folder id.")
+@click.option("--member-id", "member_id", default=None, help="Retrieve campaigns sent to a particular list member. Member ID is The MD5 hash o")
+@click.option("--sort-field", "sort_field", default=None, help="Returns files sorted by the specified field.")
+@click.option("--sort-dir", "sort_dir", default=None, help="Determines the order direction for sorted results.")
+@click.option("--include-resend-shortcut-eligibility", "include_resend_shortcut_eligibility", default=None, type=bool, help="Return the `resend_shortcut_eligibility` field in the response, which tells you ")
+@click.option("--include-resend-shortcut-usage", "include_resend_shortcut_usage", default=None, type=bool, help="Return the `resend_shortcut_usage` field in the response.  This includes informa")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_list_(ctx, fields, exclude_fields, count, offset, type_, status, before_send_time, since_send_time, before_create_time, since_create_time, list_id, folder_id, member_id, sort_field, sort_dir, include_resend_shortcut_eligibility, include_resend_shortcut_usage, extra_params):
@@ -124,10 +124,10 @@ def _cmd_delete(ctx, campaign_id, extra_params):
 
 @campaigns_group.command("get")
 @click.argument("CAMPAIGN_ID")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
-@click.option("--include-resend-shortcut-eligibility", default=None, type=bool, help="Return the `resend_shortcut_eligibility` field in the response, which tells you ")
-@click.option("--include-resend-shortcut-usage", default=None, type=bool, help="Return the `resend_shortcut_usage` field in the response.  This includes informa")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--include-resend-shortcut-eligibility", "include_resend_shortcut_eligibility", default=None, type=bool, help="Return the `resend_shortcut_eligibility` field in the response, which tells you ")
+@click.option("--include-resend-shortcut-usage", "include_resend_shortcut_usage", default=None, type=bool, help="Return the `resend_shortcut_usage` field in the response.  This includes informa")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_get(ctx, campaign_id, fields, exclude_fields, include_resend_shortcut_eligibility, include_resend_shortcut_usage, extra_params):
@@ -361,8 +361,8 @@ def _cmd_unschedule(ctx, campaign_id, extra_params):
 
 @campaigns_group.command("list-campaigns-id-content")
 @click.argument("CAMPAIGN_ID")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_list_campaigns_id_content(ctx, campaign_id, fields, exclude_fields, extra_params):
@@ -383,6 +383,8 @@ def _cmd_list_campaigns_id_content(ctx, campaign_id, fields, exclude_fields, ext
         _out_err(e.status, e.title, e.detail, e.raw)
         return
     _out(result)
+
+campaigns_group.add_command(_cmd_list_campaigns_id_content, "list-content")
 
 @campaigns_group.command("update-campaigns-id-content")
 @click.argument("CAMPAIGN_ID")
@@ -408,8 +410,8 @@ def _cmd_update_campaigns_id_content(ctx, campaign_id, data, extra_params):
 
 @campaigns_group.command("list-campaigns-id-feedback")
 @click.argument("CAMPAIGN_ID")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_list_campaigns_id_feedback(ctx, campaign_id, fields, exclude_fields, extra_params):
@@ -477,8 +479,8 @@ def _cmd_delete_campaigns_id_feedback_id(ctx, campaign_id, feedback_id, extra_pa
 @campaigns_group.command("get-campaigns-id-feedback-id")
 @click.argument("CAMPAIGN_ID")
 @click.argument("FEEDBACK_ID")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_get_campaigns_id_feedback_id(ctx, campaign_id, feedback_id, fields, exclude_fields, extra_params):
@@ -525,8 +527,8 @@ def _cmd_update_campaigns_id_feedback_id(ctx, campaign_id, feedback_id, data, ex
 
 @campaigns_group.command("list-campaigns-id-send-checklist")
 @click.argument("CAMPAIGN_ID")
-@click.option("--fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
-@click.option("--exclude-fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
+@click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
+@click.option("--exclude-fields", "exclude_fields", default=None, help="A comma-separated list of fields to exclude. Reference parameters of sub-objects")
 @click.option("--extra-params", default=None, help="Extra query params as JSON object, e.g. '{\"key\":\"val\"}'")
 @click.pass_context
 def _cmd_list_campaigns_id_send_checklist(ctx, campaign_id, fields, exclude_fields, extra_params):
@@ -547,3 +549,5 @@ def _cmd_list_campaigns_id_send_checklist(ctx, campaign_id, fields, exclude_fiel
         _out_err(e.status, e.title, e.detail, e.raw)
         return
     _out(result)
+
+campaigns_group.add_command(_cmd_list_campaigns_id_send_checklist, "list-send-checklist")

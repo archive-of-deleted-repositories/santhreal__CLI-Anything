@@ -405,6 +405,35 @@ class TestGeneratedCommandsImport(unittest.TestCase):
             params={"skip_merge_validation": True},
         )
 
+    def test_generated_keyword_query_option_uses_safe_callback_name(self):
+        from click.testing import CliRunner
+        from cli_anything.mailchimp.commands.templates import templates_group
+
+        client = MagicMock()
+        client.get.return_value = {"templates": []}
+
+        with patch("cli_anything.mailchimp.core.client.get_client", return_value=client):
+            result = CliRunner().invoke(templates_group, ["list", "--type", "user"])
+
+        assert result.exit_code == 0, result.output
+        client.get.assert_called_once_with("/templates", params={"type": "user"})
+
+    def test_campaign_shortcut_aliases_match_generated_commands(self):
+        from click.testing import CliRunner
+        from cli_anything.mailchimp.commands.campaigns import campaigns_group
+
+        client = MagicMock()
+        client.get.return_value = {"items": []}
+
+        with patch("cli_anything.mailchimp.core.client.get_client", return_value=client):
+            content = CliRunner().invoke(campaigns_group, ["list-content", "campaign-1"])
+            checklist = CliRunner().invoke(campaigns_group, ["list-send-checklist", "campaign-1"])
+
+        assert content.exit_code == 0, content.output
+        assert checklist.exit_code == 0, checklist.output
+        client.get.assert_any_call("/campaigns/campaign-1/content", params=None)
+        client.get.assert_any_call("/campaigns/campaign-1/send-checklist", params=None)
+
     def test_ping_group_invokes_health_check_without_list_subcommand(self):
         from click.testing import CliRunner
         from cli_anything.mailchimp.mailchimp_cli import cli

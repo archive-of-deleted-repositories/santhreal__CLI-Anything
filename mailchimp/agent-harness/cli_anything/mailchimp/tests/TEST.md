@@ -14,7 +14,7 @@ cd mailchimp/agent-harness
 pytest cli_anything/mailchimp/tests/test_core.py -v
 ```
 
-Expected: 17 tests, all green. Runtime < 5 seconds.
+Expected: all collected tests pass. Runtime < 5 seconds.
 
 ## Live E2E tests (requires MAILCHIMP_API_KEY)
 
