@@ -1340,6 +1340,8 @@ def _cmd_list_preview_a_segment(ctx, list_id, fields, exclude_fields, count, off
         return
     _out(result)
 
+lists_group.add_command(_cmd_list_preview_a_segment, "list-lists-id-segments")
+
 @lists_group.command("create-lists-id-segments")
 @click.argument("LIST_ID")
 @click.option("--data", default=None, help="Request body as JSON string.")

@@ -195,6 +195,8 @@ def _cmd_list_reports_id_click_details(ctx, campaign_id, fields, exclude_fields,
         return
     _out(result)
 
+reports_group.add_command(_cmd_list_reports_id_click_details, "list-click-details")
+
 @reports_group.command("get-reports-id-click-details-id")
 @click.argument("CAMPAIGN_ID")
 @click.argument("LINK_ID")
@@ -303,6 +305,8 @@ def _cmd_list_reports_id_domain_performance(ctx, campaign_id, fields, exclude_fi
         return
     _out(result)
 
+reports_group.add_command(_cmd_list_reports_id_domain_performance, "list-domain-performance")
+
 @reports_group.command("list-reports-id-ecommerce-product-activity")
 @click.argument("CAMPAIGN_ID")
 @click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
@@ -390,6 +394,8 @@ def _cmd_list_reports_id_email_activity(ctx, campaign_id, fields, exclude_fields
         return
     _out(result)
 
+reports_group.add_command(_cmd_list_reports_id_email_activity, "list-email-activity")
+
 @reports_group.command("get-reports-id-email-activity-id")
 @click.argument("CAMPAIGN_ID")
 @click.argument("SUBSCRIBER_HASH")
@@ -447,6 +453,8 @@ def _cmd_list_reports_id_locations(ctx, campaign_id, fields, exclude_fields, cou
         return
     _out(result)
 
+reports_group.add_command(_cmd_list_reports_id_locations, "list-locations")
+
 @reports_group.command("list-reports-id-open-details")
 @click.argument("CAMPAIGN_ID")
 @click.option("--fields", "fields", default=None, help="A comma-separated list of fields to return. Reference parameters of sub-objects ")
@@ -481,6 +489,8 @@ def _cmd_list_reports_id_open_details(ctx, campaign_id, fields, exclude_fields, 
         _out_err(e.status, e.title, e.detail, e.raw)
         return
     _out(result)
+
+reports_group.add_command(_cmd_list_reports_id_open_details, "list-open-details")
 
 @reports_group.command("get-reports-id-open-details-id-members-id")
 @click.argument("CAMPAIGN_ID")
@@ -616,6 +626,8 @@ def _cmd_list_reports_id_unsubscribed(ctx, campaign_id, fields, exclude_fields, 
         _out_err(e.status, e.title, e.detail, e.raw)
         return
     _out(result)
+
+reports_group.add_command(_cmd_list_reports_id_unsubscribed, "list-unsubscribed")
 
 @reports_group.command("get-reports-id-unsubscribed-id")
 @click.argument("CAMPAIGN_ID")

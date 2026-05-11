@@ -191,6 +191,8 @@ def _cmd_list_automations_id_emails(ctx, workflow_id, extra_params):
         return
     _out(result)
 
+automations_group.add_command(_cmd_list_automations_id_emails, "list-emails")
+
 @automations_group.command("delete")
 @click.argument("WORKFLOW_ID")
 @click.argument("WORKFLOW_EMAIL_ID")

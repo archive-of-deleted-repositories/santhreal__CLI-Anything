@@ -346,8 +346,24 @@ def _generate_module(tag: str, operations: list[tuple[str, str, dict]]) -> str:
             body_parts.append('campaigns_group.add_command(_cmd_list_campaigns_id_content, "list-content")\n')
         if tag.lower() == "campaigns" and cmd_name == "list-campaigns-id-send-checklist":
             body_parts.append('campaigns_group.add_command(_cmd_list_campaigns_id_send_checklist, "list-send-checklist")\n')
+        if tag.lower() == "reports" and cmd_name == "list-reports-id-click-details":
+            body_parts.append('reports_group.add_command(_cmd_list_reports_id_click_details, "list-click-details")\n')
+        if tag.lower() == "reports" and cmd_name == "list-reports-id-domain-performance":
+            body_parts.append('reports_group.add_command(_cmd_list_reports_id_domain_performance, "list-domain-performance")\n')
+        if tag.lower() == "reports" and cmd_name == "list-reports-id-email-activity":
+            body_parts.append('reports_group.add_command(_cmd_list_reports_id_email_activity, "list-email-activity")\n')
+        if tag.lower() == "reports" and cmd_name == "list-reports-id-locations":
+            body_parts.append('reports_group.add_command(_cmd_list_reports_id_locations, "list-locations")\n')
+        if tag.lower() == "reports" and cmd_name == "list-reports-id-open-details":
+            body_parts.append('reports_group.add_command(_cmd_list_reports_id_open_details, "list-open-details")\n')
+        if tag.lower() == "reports" and cmd_name == "list-reports-id-unsubscribed":
+            body_parts.append('reports_group.add_command(_cmd_list_reports_id_unsubscribed, "list-unsubscribed")\n')
+        if tag.lower() == "automations" and cmd_name == "list-automations-id-emails":
+            body_parts.append('automations_group.add_command(_cmd_list_automations_id_emails, "list-emails")\n')
         if tag.lower() == "lists" and cmd_name == "create-lists-id-members":
             body_parts.append('lists_group.add_command(_cmd_create_lists_id_members, "create-members")\n')
+        if tag.lower() == "lists" and cmd_name == "list-preview-a-segment":
+            body_parts.append('lists_group.add_command(_cmd_list_preview_a_segment, "list-lists-id-segments")\n')
 
     return header + "\n".join(body_parts)
 
