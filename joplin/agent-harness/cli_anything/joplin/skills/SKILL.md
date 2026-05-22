@@ -1,4 +1,4 @@
----
+﻿---
 name: "cli-anything-joplin"
 description: "Command-line interface for Joplin workflows using the real joplin terminal backend"
 ---
@@ -106,5 +106,5 @@ CLI_ANYTHING_FORCE_INSTALLED=1 python -m pytest -v -s cli_anything/joplin/tests/
 
 Current validation baseline (Windows + Joplin CLI 3.6.2):
 
-- `python -m pytest -q cli_anything/joplin/tests/test_core.py` -> `104 passed`
-- `python -m pytest -q cli_anything/joplin/tests` -> `131 passed, 1 skipped`
+- `python -m pytest -q cli_anything/joplin/tests/test_core.py` -> `107 passed`
+- `python -m pytest -q cli_anything/joplin/tests` -> `134 passed, 1 skipped`

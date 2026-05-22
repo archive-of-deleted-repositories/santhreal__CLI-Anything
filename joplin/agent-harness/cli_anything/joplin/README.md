@@ -1,4 +1,4 @@
-# cli-anything-joplin
+﻿# cli-anything-joplin
 
 `cli-anything-joplin` is a stateful CLI harness that wraps the real `joplin` terminal
 binary, exposing every common Joplin workflow under a uniform JSON command envelope.
@@ -121,8 +121,8 @@ CLI_ANYTHING_FORCE_INSTALLED=1 python -m pytest -v -s cli_anything/joplin/tests/
 
 Current validation baseline (Windows + Joplin CLI 3.6.2):
 
-- `python -m pytest -q cli_anything/joplin/tests/test_core.py` -> `104 passed`
-- `python -m pytest -q cli_anything/joplin/tests` -> `131 passed, 1 skipped`
+- `python -m pytest -q cli_anything/joplin/tests/test_core.py` -> `107 passed`
+- `python -m pytest -q cli_anything/joplin/tests` -> `134 passed, 1 skipped`
 
 See `cli_anything/joplin/tests/TEST.md` for the full test plan and
 `cli_anything/joplin/WORKFLOWS.md` for the verified workflow inventory.

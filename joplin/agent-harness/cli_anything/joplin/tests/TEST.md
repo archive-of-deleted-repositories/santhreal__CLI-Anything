@@ -1,4 +1,4 @@
-# Test Plan ???cli-anything-joplin
+﻿# Test Plan ???cli-anything-joplin
 
 The suite has two files:
 
@@ -8,7 +8,7 @@ The suite has two files:
 
 Real-backend classes are skipped automatically when `joplin` is not on `PATH`.
 
-## test_core.py (104 tests)
+## test_core.py (107 tests)
 
 Pure Python tests covering the harness surface. Safe to run anywhere without
 a Joplin backend.
@@ -30,6 +30,11 @@ Coverage areas:
   benign Node warning handling (scrubbed copy used only for the non-zero exit
   decision; returned `stdout`/`stderr` stay verbatim), mixed warning+real-error
   surfacing, timeout, JSON parse fallback, empty stdout
+- **Silent-failure guard (P1)**: a non-zero exit with completely empty stdout
+  and stderr now raises `RuntimeError` (with the exit code and command in the
+  message) instead of silently returning `ok=true`; the positive-proof path is
+  preserved so warning-only non-zero exits (scrubbing empties both streams)
+  are still accepted as benign; exit code 2+ is also covered
 - Node warning continuation line (`(Use \`node --trace-deprecation …\`)`):
   the hint line Node appends after each deprecation warning is now also dropped
   during scrubbing so warning-only stderr no longer triggers a false

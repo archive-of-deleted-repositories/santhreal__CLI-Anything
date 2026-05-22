@@ -1,4 +1,4 @@
-# JOPLIN Harness SOP
+﻿# JOPLIN Harness SOP
 
 ## Overview
 
@@ -125,8 +125,8 @@ For real backend runs, ensure `joplin` is installed and available in `PATH`.
 
 Current validation baseline (Windows + Joplin CLI 3.6.2):
 
-- `python -m pytest -q cli_anything/joplin/tests/test_core.py` -> `104 passed`
-- `python -m pytest -q cli_anything/joplin/tests` -> `131 passed, 1 skipped`
+- `python -m pytest -q cli_anything/joplin/tests/test_core.py` -> `107 passed`
+- `python -m pytest -q cli_anything/joplin/tests` -> `134 passed, 1 skipped`
 
 ## Development notes
 

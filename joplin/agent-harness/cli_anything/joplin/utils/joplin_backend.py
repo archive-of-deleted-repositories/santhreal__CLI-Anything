@@ -141,10 +141,27 @@ def run_joplin_command(args: list[str], config: BackendConfig, timeout: Optional
         # is a real Joplin failure or just Node noise. The returned result
         # keeps the raw streams so callers still see the original output if
         # they want to log or diff it.
+        #
+        # Decision rule (fail-safe / positive-proof):
+        #   - If the scrubbed streams are non-empty  → real error; raise.
+        #   - If the raw streams are non-empty AND scrubbing emptied them
+        #     → the only output was benign Node noise; treat as success.
+        #   - If BOTH raw streams are empty           → the process exited
+        #     non-zero without writing anything; this is still a failure
+        #     (e.g. rmnote on a missing note, a killed server process, a
+        #     propagated SIGTERM). Raise with a generic message so callers
+        #     get ok=false rather than a silent ok=true.
         scrubbed_stderr = _strip_benign_node_warnings(stderr_raw)
         scrubbed_stdout = _strip_benign_node_warnings(stdout_raw)
         if scrubbed_stderr or scrubbed_stdout:
+            # Real diagnostic content survived scrubbing.
             raise RuntimeError(scrubbed_stderr or scrubbed_stdout)
+        if not stderr_raw and not stdout_raw:
+            # Empty streams with a non-zero exit code: process failed silently.
+            raise RuntimeError(
+                f"Joplin command exited with code {proc.returncode} "
+                f"without producing any output (command: {' '.join(cmd)})"
+            )
 
     return result
 

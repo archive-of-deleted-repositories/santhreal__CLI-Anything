@@ -469,6 +469,66 @@ def test_backend_run_command_real_error_alongside_warning_raises(monkeypatch):
     assert "DEP0040" not in str(excinfo.value)
 
 
+def test_backend_run_command_nonzero_empty_output_raises(monkeypatch):
+    """Regression for P1: a non-zero exit with empty stdout AND stderr must
+    raise RuntimeError rather than returning ok=true silently.
+
+    This covers real Joplin failures that produce no output at all (e.g.
+    `rmnote` on a non-existent note in some builds, or a process killed by a
+    signal without printing anything).
+    """
+    class Proc:
+        returncode = 1
+        stdout = ""
+        stderr = ""
+
+    monkeypatch.setattr(joplin_backend, "find_joplin", lambda _: "joplin")
+    monkeypatch.setattr(joplin_backend.subprocess, "run", lambda *a, **k: Proc())
+    cfg = joplin_backend.BackendConfig(binary="joplin", profile=None)
+    with pytest.raises(RuntimeError) as excinfo:
+        joplin_backend.run_joplin_command(["rmnote", "ghost-note"], cfg)
+    msg = str(excinfo.value)
+    assert "exit" in msg.lower() or "code" in msg.lower() or "1" in msg
+    assert "rmnote" in msg
+
+
+def test_backend_run_command_nonzero_exit2_empty_output_raises(monkeypatch):
+    """Non-zero exit codes other than 1 (e.g. 2 = usage error, 127 = command
+    not found) must also be treated as failures when output is empty."""
+    class Proc:
+        returncode = 2
+        stdout = ""
+        stderr = ""
+
+    monkeypatch.setattr(joplin_backend, "find_joplin", lambda _: "joplin")
+    monkeypatch.setattr(joplin_backend.subprocess, "run", lambda *a, **k: Proc())
+    cfg = joplin_backend.BackendConfig(binary="joplin", profile=None)
+    with pytest.raises(RuntimeError) as excinfo:
+        joplin_backend.run_joplin_command(["ls"], cfg)
+    assert "2" in str(excinfo.value)
+
+
+def test_backend_run_command_warning_only_nonzero_still_succeeds(monkeypatch):
+    """Verify the positive-proof path still works: if ALL output is purely
+    benign Node warnings (and scrubbing reduces it to empty), a non-zero exit
+    is accepted as a warning-only run rather than a failure."""
+    _WARNING = "(node:1234) [DEP0040] DeprecationWarning: The `punycode` module is deprecated."
+    _HINT = "(Use `node --trace-deprecation ...` to show where the warning was created)"
+
+    class Proc:
+        returncode = 1
+        stdout = ""
+        stderr = f"{_WARNING}\n{_HINT}"
+
+    monkeypatch.setattr(joplin_backend, "find_joplin", lambda _: "joplin")
+    monkeypatch.setattr(joplin_backend.subprocess, "run", lambda *a, **k: Proc())
+    cfg = joplin_backend.BackendConfig(binary="joplin", profile=None)
+    # Must NOT raise — the only content is benign warnings.
+    result = joplin_backend.run_joplin_command(["ls"], cfg)
+    assert result["returncode"] == 1
+    assert result["stderr"] == f"{_WARNING}\n{_HINT}"
+
+
 def test_backend_run_command_preserves_raw_stdout(monkeypatch):
     """run_joplin_command must pass stdout verbatim to callers.
 
