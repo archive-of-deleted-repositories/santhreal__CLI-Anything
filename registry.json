@@ -291,9 +291,28 @@
       ]
     },
     {
+      "name": "calibre",
+      "display_name": "Calibre",
+      "version": "1.0.0",
+      "description": "E-book library management — list, search, metadata editing, format conversion via calibredb, ebook-convert, ebook-meta",
+      "requires": "Calibre (apt install calibre, brew install --cask calibre)",
+      "homepage": "https://calibre-ebook.com",
+      "source_url": null,
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=calibre/agent-harness",
+      "entry_point": "cli-anything-calibre",
+      "skill_md": "calibre/agent-harness/cli_anything/calibre/skills/SKILL.md",
+      "category": "office",
+      "contributors": [
+        {
+          "name": "OGRLEAF",
+          "url": "https://github.com/OGRLEAF"
+        }
+      ]
+    },
+    {
       "name": "libreoffice",
       "display_name": "LibreOffice",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "description": "Create and manipulate ODF documents, export to PDF/DOCX/XLSX/PPTX via headless mode",
       "requires": "libreoffice",
       "homepage": "https://www.libreoffice.org",
@@ -306,6 +325,10 @@
         {
           "name": "CLI-Anything-Team",
           "url": "https://github.com/HKUDS/CLI-Anything"
+        },
+        {
+          "name": "Mubashirrrr",
+          "url": "https://github.com/Mubashirrrr"
         }
       ]
     },
@@ -746,6 +769,25 @@
       ]
     },
     {
+      "name": "ueatelier",
+      "display_name": "UEAtelier",
+      "version": "0.23.1",
+      "description": "Unreal Editor 5.6/5.7 MCP self-extension workbench - editor automation, build diagnostics, Task Atlas workflows, PIE smoke verification, scaffold pipeline",
+      "requires": "Unreal Engine 5.6 or 5.7 with the UEAtelier plugin extracted into <YourProject>/",
+      "homepage": "https://github.com/edwinmeng163-oss/UEAtelier",
+      "source_url": "https://github.com/edwinmeng163-oss/UEAtelier",
+      "install_cmd": "pip install git+https://github.com/edwinmeng163-oss/UEAtelier.git#subdirectory=Tools/UEAtelierCli",
+      "entry_point": "cli-anything-ueatelier",
+      "skill_md": "https://github.com/edwinmeng163-oss/UEAtelier/blob/main/Tools/UEAtelierCli/SKILL.md",
+      "category": "gamedev",
+      "contributors": [
+        {
+          "name": "edwinmeng163-oss",
+          "url": "https://github.com/edwinmeng163-oss"
+        }
+      ]
+    },
+    {
       "name": "nsight-graphics",
       "display_name": "Nsight Graphics CLI",
       "version": "0.2.0",
@@ -957,7 +999,7 @@
     {
       "name": "obsidian",
       "display_name": "Obsidian",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "description": "Knowledge management and note-taking — manage notes, search vault, execute commands via Obsidian Local REST API",
       "requires": "Obsidian desktop app with Local REST API plugin enabled",
       "homepage": "https://obsidian.md",
@@ -970,6 +1012,10 @@
         {
           "name": "dorukozgen",
           "url": "https://github.com/dorukozgen"
+        },
+        {
+          "name": "Mubashirrrr",
+          "url": "https://github.com/Mubashirrrr"
         }
       ]
     },
@@ -1160,6 +1206,44 @@
         {
           "name": "iGodly",
           "url": "https://github.com/iGodly"
+        }
+      ]
+    },
+    {
+      "name": "3mf",
+      "display_name": "3MF",
+      "version": "1.0.0",
+      "description": "Mesh geometry editor for 3D printing files — detect and resize cylindrical holes, repair meshes, compare 3MF files",
+      "requires": "Python 3.10+; numpy, scipy, trimesh",
+      "homepage": "https://3mf.io",
+      "source_url": null,
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=3MF/agent-harness",
+      "entry_point": "cli-anything-3mf",
+      "skill_md": "3MF/agent-harness/cli_anything/threemf/skills/SKILL.md",
+      "category": "graphics",
+      "contributors": [
+        {
+          "name": "Gituheart",
+          "url": "https://github.com/Gituheart"
+        }
+      ]
+    },
+    {
+      "name": "minimax",
+      "display_name": "MiniMax",
+      "version": "1.0.0",
+      "description": "Chat and TTS via MiniMax AI API — MiniMax-M2.7 chat models and speech-2.8-hd TTS",
+      "requires": "MINIMAX_API_KEY",
+      "homepage": "https://platform.minimax.io",
+      "source_url": null,
+      "install_cmd": "pip install git+https://github.com/HKUDS/CLI-Anything.git#subdirectory=minimax/agent-harness",
+      "entry_point": "cli-anything-minimax",
+      "skill_md": "minimax/agent-harness/cli_anything/minimax/skills/SKILL.md",
+      "category": "ai",
+      "contributors": [
+        {
+          "name": "octo-patch",
+          "url": "https://github.com/octo-patch"
         }
       ]
     }

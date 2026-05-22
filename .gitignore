@@ -65,6 +65,7 @@
 !/dify-workflow/
 !/adguardhome/
 !/novita/
+!/minimax/
 !/ollama/
 !/browser/
 !/seaclip/
@@ -92,7 +93,9 @@
 !/sbox/
 !/quietshrink/
 !/mailchimp/
-
+!/3MF/
+!/calibre/
+!/rekordbox/
 # Step 5: Inside each software dir, ignore everything (including dotfiles)
 /gimp/*
 /gimp/.*
@@ -166,6 +169,8 @@
 /openscreen/.*
 /QGIS/*
 /QGIS/.*
+/3MF/*
+/3MF/.*
 /cloudanalyzer/*
 /cloudanalyzer/.*
 /wiremock/*
@@ -192,6 +197,10 @@
 /quietshrink/.*
 /mailchimp/*
 /mailchimp/.*
+/calibre/*
+/calibre/.*
+/rekordbox/*
+/rekordbox/.*
 
 # Step 6: ...except agent-harness/
 !/gimp/agent-harness/
@@ -215,6 +224,7 @@
 !/dify-workflow/agent-harness/
 !/adguardhome/agent-harness/
 !/novita/agent-harness/
+!/minimax/agent-harness/
 !/ollama/agent-harness/
 !/browser/agent-harness/
 !/seaclip/agent-harness/
@@ -231,6 +241,7 @@
 !/renderdoc/agent-harness/
 !/cloudcompare/agent-harness/
 !/openscreen/agent-harness/
+!/3MF/agent-harness/
 !/cloudanalyzer/
 !/cloudanalyzer/agent-harness/
 !/wiremock/
@@ -240,6 +251,7 @@
 !/n8n/agent-harness/
 !/obsidian/agent-harness/
 !/joplin/agent-harness/
+!/calibre/agent-harness/
 !/safari/
 !/safari/agent-harness/
 !/unrealinsights/agent-harness/
@@ -250,6 +262,7 @@
 !/sbox/agent-harness/
 !/quietshrink/agent-harness/
 !/mailchimp/agent-harness/
+!/rekordbox/agent-harness/
 
 # Exclude non-gedit demo macros from macrocli (local only)
 /macrocli/agent-harness/cli_anything/macrocli/macro_definitions/demo/flameshot*
