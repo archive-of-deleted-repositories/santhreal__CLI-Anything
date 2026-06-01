@@ -228,13 +228,33 @@ def extract_commands_from_cli(cli_path: Path) -> list[CommandGroup]:
     )
 
     group_lookup = {}
-    for match in re.finditer(group_pattern, content):
+    group_display_paths = {}
+    group_matches = list(re.finditer(group_pattern, content))
+    root_group_funcs = {
+        match.group(3).lower()
+        for match in group_matches
+        if match.group(1).lower() == "click"
+    }
+
+    for match in group_matches:
+        group_parent = match.group(1)
         group_args = match.group(2)
         group_func = match.group(3)
         # Docstring can be in group 4 (triple-double) or group 5 (triple-single)
         group_doc = (match.group(4) or match.group(5) or "").strip()
 
-        group_name = _format_display_name(_click_declared_name(group_args, group_func))
+        local_group_name = _format_display_name(_click_declared_name(group_args, group_func))
+        parent_key = group_parent.lower()
+        if parent_key == "click" or parent_key in root_group_funcs:
+            group_path = [local_group_name]
+        else:
+            parent_path = group_display_paths.get(parent_key)
+            if parent_path:
+                group_path = [*parent_path, local_group_name]
+            else:
+                group_path = [_format_display_name(group_parent), local_group_name]
+
+        group_name = " ".join(group_path)
 
         group = CommandGroup(
             name=group_name,
@@ -243,6 +263,7 @@ def extract_commands_from_cli(cli_path: Path) -> list[CommandGroup]:
         )
         groups.append(group)
         group_lookup[group_func.lower()] = group
+        group_display_paths[group_func.lower()] = group_path
 
     # Find Click command decorators
     # Pattern handles:
